@@ -316,12 +316,6 @@
   }
   .splitcard img, .splitcard video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s var(--ease); }
   .splitcard .half.pressed img, .splitcard .half.pressed video{ transform:scale(1.08); }
-  .slideshow{ position:relative; width:100%; height:100%; }
-  .slideshow img{ position:absolute; inset:0; opacity:0; transition:opacity .7s var(--ease); }
-  .slideshow img.active{ opacity:1; }
-  .slidedots{ position:absolute; left:0; right:0; bottom:48px; display:flex; justify-content:center; gap:5px; z-index:5; }
-  .slidedots .d{ width:5px; height:5px; border-radius:50%; background:rgba(244,238,225,0.4); transition:background .3s, transform .3s; }
-  .slidedots .d.active{ background:var(--gold-lt); transform:scale(1.3); }
   .splitcard .lbl{
     position:absolute; left:0; right:0; bottom:0; padding:12px 12px;
     background:linear-gradient(0deg, rgba(5,7,12,0.92), transparent 75%);
@@ -448,17 +442,8 @@
           <p class="eyebrow" style="margin:0;">The Original &middot; Since 2022</p>
         </div>
         <div class="splitcard reveal">
-          <div class="half glass gold interactive" style="height:170px;" id="lagerSlideshow">
-            <div class="slideshow">
-              <img class="active" src="real/lager-can.webp" alt="NWPRT Premium Lager can">
-              <img src="real/lager-tap-pier.jpg" alt="NWPRT Lager tap handle at the bar">
-              <img src="real/lager-tap-dual.jpg" alt="NWPRT tap handles">
-              <img src="real/lager-keg-pier.jpg" alt="NWPRT Lager keg on the pier boardwalk">
-              <img src="real/lager-tap-studio.jpg" alt="NWPRT original green tap handle, studio shot">
-            </div>
-            <div class="slidedots">
-              <div class="d active"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
-            </div>
+          <div class="half glass gold interactive" style="height:170px;">
+            <img src="real/lager-tap-studio.jpg" alt="NWPRT Premium Lager tap handle, original design">
             <div class="lbl">PREMIUM<br>LAGER</div>
           </div>
           <div class="half glass gold interactive" style="height:170px;">
@@ -755,25 +740,6 @@
   /* ---------- splitcard cross-navigation ---------- */
   document.getElementById('splitLeft').addEventListener('click', () => go('story'));
   document.getElementById('splitRight').addEventListener('click', () => go('tequila'));
-
-  /* ---------- lager photo slideshow: auto-advance + tap to advance ---------- */
-  (function(){
-    const wrap = document.getElementById('lagerSlideshow');
-    const imgs = wrap.querySelectorAll('.slideshow img');
-    const dots = wrap.querySelectorAll('.slidedots .d');
-    let idx = 0;
-    function show(i){
-      idx = (i + imgs.length) % imgs.length;
-      imgs.forEach((im, n) => im.classList.toggle('active', n === idx));
-      dots.forEach((d, n) => d.classList.toggle('active', n === idx));
-    }
-    let timer = setInterval(() => show(idx + 1), 3200);
-    wrap.addEventListener('click', () => {
-      clearInterval(timer);
-      show(idx + 1);
-      timer = setInterval(() => show(idx + 1), 3200);
-    });
-  })();
 
   /* ---------- flywheel: tap a node to spotlight it + pulse the center ---------- */
   const fwAngles = [-90, -30, 30, 90, 150, 210]; // degrees, matches n1..n6 clockwise from top
