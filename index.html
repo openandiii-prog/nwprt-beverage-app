@@ -207,6 +207,19 @@
     box-shadow:0 8px 18px -8px rgba(198,162,74,0.7), inset 0 1px 0 rgba(255,255,255,0.4);
   }
 
+  /* chip pop-out detail panel */
+  .chipdetail{
+    margin:0 20px; border-radius:18px; overflow:hidden;
+    max-height:0; opacity:0;
+    transition:max-height .45s var(--ease), opacity .35s var(--ease), margin-top .45s var(--ease);
+  }
+  .chipdetail.open{ max-height:220px; opacity:1; margin-top:10px; }
+  .chipdetail-inner{ display:flex; gap:12px; padding:14px; align-items:center; }
+  .chipdetail-inner img{ width:88px; height:88px; border-radius:14px; object-fit:cover; flex:0 0 auto; }
+  .chipdetail-inner .txt{ flex:1; min-width:0; }
+  .chipdetail-inner .t{ font-family:'Playfair Display',serif; color:var(--cream); font-weight:700; font-size:15px; margin:0 0 5px; }
+  .chipdetail-inner .d{ color:var(--cream-dim); font-size:12px; line-height:1.5; margin:0; }
+
   /* stat row */
   .statrow{ display:flex; gap:10px; padding:4px 20px 4px; }
   .stat{ flex:1; text-align:center; padding:13px 6px; border-radius:15px; }
@@ -303,13 +316,12 @@
   }
   .splitcard img, .splitcard video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s var(--ease); }
   .splitcard .half.pressed img, .splitcard .half.pressed video{ transform:scale(1.08); }
-  .playglyph{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:40px; height:40px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    transition:opacity .25s var(--ease), transform .25s var(--ease);
-  }
-  .half.playing .playglyph{ opacity:0; transform:translate(-50%,-50%) scale(0.7); pointer-events:none; }
+  .slideshow{ position:relative; width:100%; height:100%; }
+  .slideshow img{ position:absolute; inset:0; opacity:0; transition:opacity .7s var(--ease); }
+  .slideshow img.active{ opacity:1; }
+  .slidedots{ position:absolute; left:0; right:0; bottom:48px; display:flex; justify-content:center; gap:5px; z-index:5; }
+  .slidedots .d{ width:5px; height:5px; border-radius:50%; background:rgba(244,238,225,0.4); transition:background .3s, transform .3s; }
+  .slidedots .d.active{ background:var(--gold-lt); transform:scale(1.3); }
   .splitcard .lbl{
     position:absolute; left:0; right:0; bottom:0; padding:12px 12px;
     background:linear-gradient(0deg, rgba(5,7,12,0.92), transparent 75%);
@@ -405,8 +417,8 @@
       <div class="screen active" data-screen="home">
         <div class="hero-card glass gold interactive reveal">
           <div class="frame">
-            <img src="real/pier-jetty.webp" alt="Newport Beach Pier">
-            <div class="cap">Est. 1906 &middot; Newport Beach, CA</div>
+            <img src="real/lager-original-badge.jpg" alt="The Original NWPRT Premium Lager">
+            <div class="cap">The Original &middot; NWPRT Premium Lager</div>
           </div>
         </div>
 
@@ -416,23 +428,41 @@
         </div>
 
         <div class="chiprow reveal">
-          <div class="chip glass interactive on" data-chip>Lager</div>
-          <div class="chip glass interactive on" data-chip>Seltzer</div>
-          <div class="chip glass interactive on" data-chip>Tequila</div>
-          <div class="chip glass interactive" data-chip>More Coming</div>
+          <div class="chip glass interactive on" data-chip="lager">Lager</div>
+          <div class="chip glass interactive" data-chip="seltzer">Seltzer</div>
+          <div class="chip glass interactive" data-chip="tequila">Tequila</div>
+          <div class="chip glass interactive" data-chip="more">More Coming</div>
+        </div>
+
+        <div class="chipdetail glass gold open" id="chipDetail">
+          <div class="chipdetail-inner" id="chipDetailInner">
+            <img src="real/lager-can.webp" alt="Premium Lager">
+            <div class="txt">
+              <p class="t">Premium Lager</p>
+              <p class="d">Crisp and easy-drinking, brewed for every occasion on the water. The original &mdash; pouring since 2022.</p>
+            </div>
+          </div>
         </div>
 
         <div class="sec reveal" style="padding:10px 20px 0;">
           <p class="eyebrow" style="margin:0;">The Original &middot; Since 2022</p>
         </div>
         <div class="splitcard reveal">
-          <div class="half glass gold interactive" style="height:170px;">
-            <img src="real/lager-can.webp" alt="NWPRT Premium Lager">
+          <div class="half glass gold interactive" style="height:170px;" id="lagerSlideshow">
+            <div class="slideshow">
+              <img class="active" src="real/lager-can.webp" alt="NWPRT Premium Lager can">
+              <img src="real/lager-tap-pier.jpg" alt="NWPRT Lager tap handle at the bar">
+              <img src="real/lager-tap-dual.jpg" alt="NWPRT tap handles">
+              <img src="real/lager-keg-pier.jpg" alt="NWPRT Lager keg on the pier boardwalk">
+              <img src="real/lager-tap-studio.jpg" alt="NWPRT original green tap handle, studio shot">
+            </div>
+            <div class="slidedots">
+              <div class="d active"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+            </div>
             <div class="lbl">PREMIUM<br>LAGER</div>
           </div>
-          <div class="half glass gold interactive" style="height:170px;" id="lagerPierHalf">
-            <video id="lagerVideo" poster="real/lager-tap-pier.jpg" playsinline muted src="real/lager-tap-pier.mp4"></video>
-            <div class="playglyph glass"><svg width="12" height="12" viewBox="0 0 24 24" fill="#F4EEE1"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="half glass gold interactive" style="height:170px;">
+            <video autoplay muted loop playsinline src="real/lager-tap-pier.mp4"></video>
             <div class="lbl">ON TAP<br>AT THE PIER</div>
           </div>
         </div>
@@ -672,12 +702,35 @@
   playReveal(document.querySelector('.screen.active'));
   positionGlow('home');
 
-  /* ---------- chip toggle ---------- */
+  /* ---------- chip pop-out detail ---------- */
+  const chipData = {
+    lager:   { img:'real/lager-can.webp', title:'Premium Lager', desc:"Crisp and easy-drinking, brewed for every occasion on the water. The original — pouring since 2022." },
+    seltzer: { img:null, title:'Seltzer', desc:'Light and refreshing, made for long days on the water. Part of the lineup since day one, alongside the Lager.' },
+    tequila: { img:'v2-gpt-image/02_bottles.jpg', title:'Tequila Blanco', desc:"100% agave, Casa de Reyes. Newport's next chapter, launching alongside Lager and Seltzer." },
+    more:    { img:null, title:'More Coming', desc:'New beverages are already in development. One brand, every occasion — stay tuned.' }
+  };
+  const chipDetail = document.getElementById('chipDetail');
+  const chipDetailInner = document.getElementById('chipDetailInner');
+  let activeChip = 'lager';
   document.querySelectorAll('[data-chip]').forEach(chip => {
     chip.addEventListener('click', () => {
-      chip.classList.toggle('on');
+      const key = chip.dataset.chip;
+      const closing = activeChip === key && chipDetail.classList.contains('open');
+      document.querySelectorAll('[data-chip]').forEach(c => c.classList.remove('on'));
+      if (closing) {
+        chipDetail.classList.remove('open');
+        activeChip = null;
+        return;
+      }
+      chip.classList.add('on');
       chip.classList.add('pop');
       setTimeout(() => chip.classList.remove('pop'), 620);
+      const d = chipData[key];
+      chipDetailInner.innerHTML =
+        (d.img ? '<img src="'+d.img+'" alt="'+d.title+'">' : '') +
+        '<div class="txt"><p class="t">'+d.title+'</p><p class="d">'+d.desc+'</p></div>';
+      chipDetail.classList.add('open');
+      activeChip = key;
     });
   });
 
@@ -703,18 +756,24 @@
   document.getElementById('splitLeft').addEventListener('click', () => go('story'));
   document.getElementById('splitRight').addEventListener('click', () => go('tequila'));
 
-  /* ---------- lager pier video: tap to play with sound ---------- */
-  const lagerHalf = document.getElementById('lagerPierHalf');
-  const lagerVideo = document.getElementById('lagerVideo');
-  lagerHalf.addEventListener('click', () => {
-    if (lagerVideo.paused) {
-      lagerHalf.classList.add('playing');
-      lagerVideo.muted = false;
-      lagerVideo.controls = true;
-      lagerVideo.play();
+  /* ---------- lager photo slideshow: auto-advance + tap to advance ---------- */
+  (function(){
+    const wrap = document.getElementById('lagerSlideshow');
+    const imgs = wrap.querySelectorAll('.slideshow img');
+    const dots = wrap.querySelectorAll('.slidedots .d');
+    let idx = 0;
+    function show(i){
+      idx = (i + imgs.length) % imgs.length;
+      imgs.forEach((im, n) => im.classList.toggle('active', n === idx));
+      dots.forEach((d, n) => d.classList.toggle('active', n === idx));
     }
-  });
-  lagerVideo.addEventListener('pause', () => lagerHalf.classList.remove('playing'));
+    let timer = setInterval(() => show(idx + 1), 3200);
+    wrap.addEventListener('click', () => {
+      clearInterval(timer);
+      show(idx + 1);
+      timer = setInterval(() => show(idx + 1), 3200);
+    });
+  })();
 
   /* ---------- flywheel: tap a node to spotlight it + pulse the center ---------- */
   const fwAngles = [-90, -30, 30, 90, 150, 210]; // degrees, matches n1..n6 clockwise from top
