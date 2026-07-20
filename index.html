@@ -187,7 +187,7 @@
     padding:6px;
   }
   .hero-card .frame{ border-radius:17px; overflow:hidden; position:relative; }
-  .hero-card img{ display:block; width:100%; height:auto; }
+  .hero-card img, .hero-card video{ display:block; width:100%; height:auto; }
   .hero-card .cap{
     position:absolute; left:0; right:0; bottom:0; padding:16px 18px;
     background:linear-gradient(0deg, rgba(5,7,12,0.88), transparent);
@@ -301,8 +301,15 @@
   .splitcard .half{
     flex:1; border-radius:18px; overflow:hidden; position:relative; height:190px; padding:0;
   }
-  .splitcard img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s var(--ease); }
-  .splitcard .half.pressed img{ transform:scale(1.08); }
+  .splitcard img, .splitcard video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s var(--ease); }
+  .splitcard .half.pressed img, .splitcard .half.pressed video{ transform:scale(1.08); }
+  .playglyph{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .half.playing .playglyph{ opacity:0; transform:translate(-50%,-50%) scale(0.7); pointer-events:none; }
   .splitcard .lbl{
     position:absolute; left:0; right:0; bottom:0; padding:12px 12px;
     background:linear-gradient(0deg, rgba(5,7,12,0.92), transparent 75%);
@@ -398,7 +405,7 @@
       <div class="screen active" data-screen="home">
         <div class="hero-card glass gold interactive reveal">
           <div class="frame">
-            <img src="v2-gpt-image/01_cover.jpg" alt="NWPRT Beverage">
+            <img src="real/pier-jetty.webp" alt="Newport Beach Pier">
             <div class="cap">Est. 1906 &middot; Newport Beach, CA</div>
           </div>
         </div>
@@ -413,6 +420,21 @@
           <div class="chip glass interactive on" data-chip>Seltzer</div>
           <div class="chip glass interactive on" data-chip>Tequila</div>
           <div class="chip glass interactive" data-chip>More Coming</div>
+        </div>
+
+        <div class="sec reveal" style="padding:10px 20px 0;">
+          <p class="eyebrow" style="margin:0;">The Original &middot; Since 2022</p>
+        </div>
+        <div class="splitcard reveal">
+          <div class="half glass gold interactive" style="height:170px;">
+            <img src="real/lager-can.webp" alt="NWPRT Premium Lager">
+            <div class="lbl">PREMIUM<br>LAGER</div>
+          </div>
+          <div class="half glass gold interactive" style="height:170px;" id="lagerPierHalf">
+            <video id="lagerVideo" poster="real/lager-tap-pier.jpg" playsinline muted src="real/lager-tap-pier.mp4"></video>
+            <div class="playglyph glass"><svg width="12" height="12" viewBox="0 0 24 24" fill="#F4EEE1"><path d="M8 5v14l11-7z"/></svg></div>
+            <div class="lbl">ON TAP<br>AT THE PIER</div>
+          </div>
         </div>
 
         <div class="card glass interactive reveal" style="margin-top:16px;">
@@ -476,6 +498,13 @@
 
       <!-- STORY -->
       <div class="screen" data-screen="story">
+        <div class="hero-card glass gold interactive reveal">
+          <div class="frame">
+            <video autoplay muted loop playsinline poster="real/pier-jetty.webp" src="real/the-platform-montage.mp4"></video>
+            <div class="cap">NWPRT &middot; The Platform</div>
+          </div>
+        </div>
+
         <div class="sec reveal" style="padding-bottom:6px;">
           <p class="eyebrow">The Opportunity</p>
           <h1 class="big">People don't simply wear a lifestyle. They gather around it.</h1>
@@ -673,6 +702,19 @@
   /* ---------- splitcard cross-navigation ---------- */
   document.getElementById('splitLeft').addEventListener('click', () => go('story'));
   document.getElementById('splitRight').addEventListener('click', () => go('tequila'));
+
+  /* ---------- lager pier video: tap to play with sound ---------- */
+  const lagerHalf = document.getElementById('lagerPierHalf');
+  const lagerVideo = document.getElementById('lagerVideo');
+  lagerHalf.addEventListener('click', () => {
+    if (lagerVideo.paused) {
+      lagerHalf.classList.add('playing');
+      lagerVideo.muted = false;
+      lagerVideo.controls = true;
+      lagerVideo.play();
+    }
+  });
+  lagerVideo.addEventListener('pause', () => lagerHalf.classList.remove('playing'));
 
   /* ---------- flywheel: tap a node to spotlight it + pulse the center ---------- */
   const fwAngles = [-90, -30, 30, 90, 150, 210]; // degrees, matches n1..n6 clockwise from top
