@@ -680,6 +680,60 @@ p.body b{ color:var(--cream); font-weight:700; }
   width:118px; height:5px; border-radius:3px; background:rgba(242,229,200,0.32); z-index:50;
 }
 
+/* ================= REQUEST SHEET ================= */
+.scrim{
+  position:absolute; inset:0; z-index:90;
+  background:rgba(3,7,13,0.62);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  opacity:0; pointer-events:none; transition:opacity var(--t-med) var(--e-out);
+}
+.scrim.open{ opacity:1; pointer-events:auto; }
+.sheet{
+  position:absolute; left:0; right:0; bottom:0; z-index:95;
+  border-radius:26px 26px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom));
+  transform:translateY(104%); transition:transform .5s var(--e-settle);
+  max-height:86%; overflow-y:auto;
+}
+.sheet.open{ transform:translateY(0); }
+.sheet .grab{ width:44px; height:5px; border-radius:3px; background:rgba(242,229,200,0.28); margin:0 auto 16px; }
+.sheet h3{ font-weight:900; letter-spacing:-0.03em; font-size:19px; color:var(--cream); margin:0 0 4px; text-align:center; }
+.sheet .sub{ font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); font-weight:700; text-align:center; margin:0 0 16px; }
+.field{ margin:0 0 11px; text-align:left; }
+.field label{ display:block; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; font-weight:800; color:var(--faint); margin:0 0 6px 4px; }
+.field input, .field textarea{
+  width:100%; padding:13px 15px; border-radius:14px; border:1px solid transparent;
+  font:600 14px 'Archivo',sans-serif; color:var(--cream);
+  background:
+    linear-gradient(158deg, rgba(251,246,236,0.06), rgba(5,11,20,0.14)) padding-box,
+    linear-gradient(165deg, rgba(251,246,236,0.22), rgba(217,185,104,0.16) 40%, rgba(5,11,20,0.5)) border-box;
+  box-shadow:inset 0 1px 0 rgba(251,246,236,0.07), inset 0 -1px 0 rgba(5,11,20,0.4);
+  outline:none; transition:box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.field input::placeholder, .field textarea::placeholder{ color:rgba(242,229,200,0.30); font-weight:500; }
+.field input:focus-visible, .field textarea:focus-visible{
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(251,246,236,0.07), 0 0 0 2px rgba(217,185,104,0.55);
+}
+.field textarea{ min-height:74px; resize:none; }
+.sheet .btn{ margin:14px 0 0; width:100%; }
+.sheet .cancelrow{ text-align:center; margin-top:12px; }
+.sheet .cancelrow button{
+  font-size:10px; letter-spacing:0.16em; text-transform:uppercase; font-weight:800;
+  color:var(--faint); cursor:pointer; padding:8px 14px; border-radius:999px;
+}
+.sheet .done{ text-align:center; padding:18px 6px 8px; display:none; }
+.sheet.ok form{ display:none; }
+.sheet.ok .done{ display:block; }
+.sheet .done .ring{
+  width:62px; height:62px; margin:0 auto 14px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 34% 26%, var(--gold-hi), var(--gold) 60%, var(--gold-deep));
+  box-shadow:0 14px 34px -12px rgba(217,185,104,0.7), inset 0 2px 4px rgba(255,255,255,0.5);
+  animation:slogo .6s var(--e-spring) both;
+}
+.sheet .done p.body{ margin:0; }
+.btn[disabled]{ opacity:.55; pointer-events:none; }
+
 /* ================= SPLASH ================= */
 .splash{
   position:absolute; inset:0; z-index:120;
@@ -1355,6 +1409,39 @@ p.body b{ color:var(--cream); font-weight:700; }
     </nav>
     <div class="homebar" aria-hidden="true"></div>
 
+    <div class="scrim" id="reqScrim"></div>
+    <div class="sheet g g-hi" id="reqSheet" role="dialog" aria-modal="true" aria-label="Request NWPRT at your venue">
+      <div class="grab" aria-hidden="true"></div>
+      <h3>Request NWPRT&reg;</h3>
+      <p class="sub">Draft Program &middot; Newport Beach</p>
+      <form id="reqForm" novalidate>
+        <div class="field">
+          <label for="rqVenue">Venue Name</label>
+          <input id="rqVenue" name="venue" type="text" placeholder="Charlie's Chili" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="rqName">Your Name</label>
+          <input id="rqName" name="name" type="text" placeholder="First and last" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="rqContact">Phone or Email</label>
+          <input id="rqContact" name="contact" type="text" placeholder="How we reach you" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="rqNote">Anything Else</label>
+          <textarea id="rqNote" name="note" placeholder="Taps available, timing, questions&hellip;"></textarea>
+        </div>
+        <button class="btn btn-gold press" type="submit" id="reqSubmit"><span>Send Request</span></button>
+        <div class="cancelrow"><button type="button" id="reqCancel">Cancel</button></div>
+      </form>
+      <div class="done">
+        <div class="ring"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0a141f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></div>
+        <h3>Request received.</h3>
+        <p class="body">The draft program will reach out. Green handles earn their place &mdash; talk soon.</p>
+        <button class="btn btn-ghost press" type="button" id="reqDone"><span>Done</span></button>
+      </div>
+    </div>
+
     <div class="splash" id="splash" aria-hidden="true">
       <img class="slogoimg" src="real/nwprt-logo.webp" alt="NWPRT&reg;">
       <div class="shair"></div>
@@ -1594,9 +1681,59 @@ p.body b{ color:var(--cream); font-weight:700; }
     dot.classList.add('read');
     showToast(wasUnread ? 'Tequila Blanco — the next chapter. Stay close.' : "You're all caught up.");
   });
-  document.getElementById('requestBtn').addEventListener('click', function(){
-    showToast('Request received. The draft program will reach out.');
-  });
+  /* ---------- venue request sheet — posts to the inbox ---------- */
+  (function(){
+    var ENDPOINT = 'https://formsubmit.co/ajax/anchorpointgo@gmail.com';
+    var sheet = document.getElementById('reqSheet');
+    var scrim = document.getElementById('reqScrim');
+    var form = document.getElementById('reqForm');
+    var submitBtn = document.getElementById('reqSubmit');
+    function openSheet(){
+      sheet.classList.remove('ok');
+      sheet.classList.add('open'); scrim.classList.add('open');
+      setTimeout(function(){ document.getElementById('rqVenue').focus(); }, 420);
+    }
+    function closeSheet(){
+      sheet.classList.remove('open'); scrim.classList.remove('open');
+    }
+    document.getElementById('requestBtn').addEventListener('click', openSheet);
+    document.getElementById('reqCancel').addEventListener('click', closeSheet);
+    document.getElementById('reqDone').addEventListener('click', closeSheet);
+    scrim.addEventListener('click', closeSheet);
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet(); });
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var venue = document.getElementById('rqVenue').value.trim();
+      var name = document.getElementById('rqName').value.trim();
+      var contact = document.getElementById('rqContact').value.trim();
+      var note = document.getElementById('rqNote').value.trim();
+      if (!venue || !name || !contact){ showToast('Venue, name, and contact are required.'); return; }
+      submitBtn.setAttribute('disabled','');
+      submitBtn.querySelector('span').textContent = 'Sending…';
+      fetch(ENDPOINT, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+        body:JSON.stringify({
+          _subject:'NWPRT Draft Program — Venue Request: ' + venue,
+          _template:'table',
+          'Venue':venue, 'Name':name, 'Contact':contact, 'Note':note || '(none)',
+          'Source':'nwprt-beverage-app.vercel.app'
+        })
+      }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { ok:r.ok, j:j }; }); })
+        .then(function(res){
+          submitBtn.removeAttribute('disabled');
+          submitBtn.querySelector('span').textContent = 'Send Request';
+          var good = res.ok && String((res.j || {}).success) !== 'false';
+          if (good){ sheet.classList.add('ok'); form.reset(); }
+          else { showToast(((res.j || {}).message) || 'Could not send — try again in a moment.'); }
+        })
+        .catch(function(){
+          submitBtn.removeAttribute('disabled');
+          submitBtn.querySelector('span').textContent = 'Send Request';
+          showToast('Network issue — try again in a moment.');
+        });
+    });
+  })();
 
   /* ---------- flywheel ---------- */
   var fwAngles = [-90, -30, 30, 90, 150, 210];
