@@ -730,12 +730,24 @@ p.body b{ color:var(--cream); font-weight:800; }
 .fwwrap{ position:relative; width:286px; height:286px; margin:16px auto 4px; perspective:1400px; }
 .fwflip{
   position:absolute; inset:0; transform-style:preserve-3d;
-  transition:transform .9s var(--e-settle);
+  transform:rotateY(0deg);
+  /* turn-in (edge-on -> flat): decelerate as the card settles face-forward */
+  transition:transform .26s cubic-bezier(.2,.7,.3,1);
 }
-.fwflip.flipped{ transform:rotateY(180deg); }
-.fwface{ position:absolute; inset:0; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
+/* turn-out (flat -> edge-on): accelerate away; the face swap happens at this point,
+   while the card is a zero-width line, so the swap itself is invisible. */
+.fwflip.turn{ transform:rotateY(90deg); transition:transform .2s cubic-bezier(.55,0,.9,.25); }
+/* Only one face is ever painted, and the visible face never rotates beyond 90deg,
+   so its text can never render mirrored/backwards on any engine (incl. iOS Safari).
+   This deliberately avoids relying on backface-visibility, which WebKit culls
+   unreliably once a filter/backdrop-filter lives inside the 3D subtree. */
+.fwface{ position:absolute; inset:0; }
+.fwfront{ visibility:visible; }
+.fwback{ visibility:hidden; }
+.fwflip.show-back .fwfront{ visibility:hidden; }
+.fwflip.show-back .fwback{ visibility:visible; }
 .fwback{
-  transform:rotateY(180deg); border-radius:24px; overflow:hidden;
+  border-radius:24px; overflow:hidden;
   background:linear-gradient(175deg, #FFFCF6, var(--cream) 55%, var(--sand));
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.8),
@@ -2870,6 +2882,21 @@ p.body b{ color:var(--cream); font-weight:800; }
   var fwTag = document.getElementById('fwTag');
   var fwList = document.getElementById('fwList');
   var PAUSE_OPEN = 36e5;
+  /* Two-phase flip: turn the card to edge-on (rotateY 90deg), swap the visible
+     face while it is a zero-width line, then turn back to flat. Because the shown
+     face never rotates past 90deg it can never appear mirrored — this is what
+     fixes the "backwards text" on iOS Safari. */
+  var FW_OUT = 200, fwTurnT = null;   /* turn-in duration lives in the CSS transition */
+  function fwTurnTo(showBack){
+    if (fwTurnT){ clearTimeout(fwTurnT); fwTurnT = null; }
+    if (reduced){ fwFlip.classList.toggle('show-back', showBack); return; }
+    fwFlip.classList.add('turn');                    /* flat -> edge-on */
+    fwTurnT = setTimeout(function(){
+      fwFlip.classList.toggle('show-back', showBack);/* swap face while invisible */
+      fwFlip.classList.remove('turn');               /* edge-on -> flat */
+      fwTurnT = null;
+    }, FW_OUT);
+  }
   function fwOpen(idx){
     var d = fwDetails[idx]; if (!d) return;
     fwImg.src = d.img; fwImg.alt = d.title;
@@ -2877,14 +2904,16 @@ p.body b{ color:var(--cream); font-weight:800; }
     fwTag.textContent = d.tag;
     fwList.innerHTML = d.pts.map(function(p){ return '<li>' + p + '</li>'; }).join('');
     fwIdx = idx; fwSet(idx, true);
-    fwFlip.classList.add('flipped');
     fwPaused = Date.now() + PAUSE_OPEN;
     if (navigator.vibrate){ try{ navigator.vibrate(6); }catch(e){} }
+    /* already showing the panel: content is swapped live, no need to re-flip */
+    if (fwFlip.classList.contains('show-back') && !fwFlip.classList.contains('turn')) return;
+    fwTurnTo(true);
   }
   function fwClose(){
-    fwFlip.classList.remove('flipped');
     fwIdx = -1; fwSet(-1, true);
     fwPaused = Date.now() + 6000;
+    fwTurnTo(false);
   }
   nodes.forEach(function(node){
     node.addEventListener('click', function(){ fwOpen(+node.dataset.fw); });
