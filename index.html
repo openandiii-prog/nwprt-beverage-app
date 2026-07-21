@@ -383,8 +383,8 @@ p.body b{ color:var(--cream); font-weight:700; }
   background:linear-gradient(0deg, rgba(5,11,20,0.92) 0%, rgba(5,11,20,0.2) 45%, transparent 70%);
 }
 .railcard .meta{ position:absolute; left:0; right:0; bottom:0; padding:12px 13px; z-index:2; text-align:center; }
-.railcard .nm{ font-weight:800; letter-spacing:-0.02em; font-size:14.5px; color:var(--cream); line-height:1.1; }
-.railcard .sb{ font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--dim); font-weight:700; margin-top:4px; }
+.railcard .nm{ display:block; font-weight:800; letter-spacing:-0.02em; font-size:14.5px; color:var(--cream); line-height:1.1; }
+.railcard .sb{ display:block; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--dim); font-weight:700; margin-top:4px; }
 .railcard .tagpx{
   position:absolute; top:10px; left:10px; z-index:2;
   font-size:7.5px; letter-spacing:0.16em; font-weight:800; text-transform:uppercase;
@@ -393,10 +393,10 @@ p.body b{ color:var(--cream); font-weight:700; }
   box-shadow:0 6px 14px -6px rgba(217,185,104,0.7);
 }
 .railcard .tagpx.blue{ background:linear-gradient(135deg, var(--blue-hi), var(--blue)); color:var(--cream); box-shadow:0 6px 14px -6px rgba(42,92,168,0.8); }
-.railcard.lockcard .ph{ display:flex; align-items:center; justify-content:center;
-  background:
-    radial-gradient(140px 100px at 50% 34%, rgba(217,185,104,0.10), transparent 70%),
-    linear-gradient(158deg, rgba(23,38,60,0.6), rgba(9,17,30,0.8));
+.lockchip{
+  position:absolute; top:10px; left:10px; z-index:2;
+  width:26px; height:26px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
 }
 .raildots{ display:flex; gap:5px; justify-content:center; padding:2px 0 0; }
 .raildots i{ width:4px; height:4px; border-radius:50%; background:var(--faint); opacity:.5; transition:all var(--t-med) var(--e-out); }
@@ -656,13 +656,31 @@ p.body b{ color:var(--cream); font-weight:700; }
   -webkit-backdrop-filter:blur(22px) saturate(160%); backdrop-filter:blur(22px) saturate(160%);
   box-shadow:inset 0 1px 0 rgba(251,246,236,0.05);
 }
+/* the floating machined-glass puck that carries the active tab */
 .tabglow{
-  position:absolute; top:6px; bottom:auto; height:52px; width:52px; border-radius:18px;
+  position:absolute; top:5px; bottom:auto; height:54px; width:54px; border-radius:19px;
+  border:1px solid transparent;
   background:
-    radial-gradient(circle at 50% 42%, rgba(217,185,104,0.20), transparent 72%),
-    linear-gradient(158deg, rgba(251,246,236,0.07), rgba(251,246,236,0.01));
-  box-shadow:inset 0 1px 0 rgba(251,246,236,0.12), inset 0 0 0 1px rgba(217,185,104,0.18);
+    linear-gradient(162deg, rgba(251,246,236,0.16), rgba(251,246,236,0.035) 38%, rgba(5,11,20,0.30) 82%, rgba(251,246,236,0.05)) padding-box,
+    linear-gradient(168deg, rgba(251,246,236,0.55), rgba(217,185,104,0.42) 30%, rgba(217,185,104,0.12) 58%, rgba(5,11,20,0.7) 94%) border-box;
+  box-shadow:
+    inset 0 1.5px 0 rgba(251,246,236,0.28),
+    inset 0 -2px 3px -1px rgba(5,11,20,0.75),
+    inset 0 0 0 1px rgba(251,246,236,0.04),
+    0 10px 20px -8px rgba(0,0,0,0.85),
+    0 3px 8px -3px rgba(0,0,0,0.6),
+    0 0 26px -8px rgba(217,185,104,0.5);
   transition:left var(--t-med) var(--e-spring); pointer-events:none; left:0;
+}
+.tabglow::before{ /* gloss cap */
+  content:""; position:absolute; inset:7% 12% 52%; border-radius:12px 12px 40% 40%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.02));
+  pointer-events:none;
+}
+.tabglow::after{ /* under-bloom on the bar */
+  content:""; position:absolute; left:14%; right:14%; bottom:-7px; height:12px;
+  background:radial-gradient(50% 100% at 50% 0%, rgba(217,185,104,0.45), transparent 75%);
+  filter:blur(1px); pointer-events:none;
 }
 .tab{
   flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
@@ -670,11 +688,27 @@ p.body b{ color:var(--cream); font-weight:700; }
   transition:color .3s, transform var(--t-fast) var(--e-out); position:relative; cursor:pointer;
   min-height:52px; justify-content:center;
 }
-.tab svg{ opacity:.8; transition:opacity .3s, transform .35s var(--e-spring); }
-.tab .tl2{ font-size:8.5px; letter-spacing:0.05em; font-weight:800; text-transform:uppercase; }
+.tab::before{ /* resting socket milled into the bar */
+  content:""; position:absolute; top:5px; left:50%; transform:translateX(-50%);
+  width:54px; height:54px; border-radius:19px;
+  box-shadow:
+    inset 0 1.5px 3px -1px rgba(5,11,20,0.8),
+    inset 0 -1px 0 rgba(251,246,236,0.05),
+    inset 0 0 0 1px rgba(5,11,20,0.35);
+  opacity:.55; pointer-events:none;
+  transition:opacity .3s;
+}
+.tab[aria-current="page"]::before{ opacity:0; }
+.tab svg{ opacity:.8; transition:opacity .3s, transform .35s var(--e-spring), filter .3s; position:relative; z-index:2; }
+.tab .tl2{ font-size:8.5px; letter-spacing:0.05em; font-weight:800; text-transform:uppercase; position:relative; z-index:2; transition:letter-spacing .3s, color .3s; }
 .tab[aria-current="page"]{ color:var(--gold-hi); }
-.tab[aria-current="page"] svg{ opacity:1; transform:translateY(-1px) scale(1.08); }
+.tab[aria-current="page"] svg{
+  opacity:1; transform:translateY(-2px) scale(1.14);
+  filter:drop-shadow(0 0 7px rgba(234,208,143,0.65)) drop-shadow(0 1px 1px rgba(5,11,20,0.8));
+}
+.tab[aria-current="page"] .tl2{ letter-spacing:0.09em; }
 .tab:active{ transform:scale(0.9); }
+.tabbar.pressing .tabglow{ transform:scale(0.94); transition:left var(--t-med) var(--e-spring), transform var(--t-fast) var(--e-out); }
 .homebar{
   position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
   width:118px; height:5px; border-radius:3px; background:rgba(242,229,200,0.32); z-index:50;
@@ -994,11 +1028,13 @@ p.body b{ color:var(--cream); font-weight:700; }
             <span class="tagpx">Next Chapter</span>
             <span class="meta"><span class="nm">Tequila Blanco</span><span class="sb">Casa de Reyes</span></span>
           </button>
-          <button class="railcard lockcard g press" data-nav="lineup" data-seg="dev" aria-label="In development">
-            <span class="ph">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D9B968" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <button class="railcard lockcard g press shine" data-nav="lineup" data-seg="dev" aria-label="In development">
+            <i class="sweep"></i>
+            <span class="ph"><img src="real/coming-soon.jpg" alt="A secret pour glowing behind frosted glass"></span>
+            <span class="shade"></span>
+            <span class="lockchip g g-lo" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#EAD08F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
             </span>
-            <span class="shade" style="background:none;"></span>
             <span class="meta"><span class="nm" style="font-size:12.5px;">In Development</span><span class="sb">More Coming</span></span>
           </button>
         </div>
@@ -1621,10 +1657,15 @@ p.body b{ color:var(--cream); font-weight:700; }
   document.addEventListener('play', function(e){
     if (e.target.tagName === 'VIDEO' && !screenOf(e.target)) e.target.pause();
   }, true);
+  var tabbarEl = document.getElementById('tabbar');
   document.querySelectorAll('.tab').forEach(function(t){
     t.addEventListener('click', function(){
       t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop');
       go(t.dataset.tab);
+    });
+    t.addEventListener('pointerdown', function(){ tabbarEl.classList.add('pressing'); });
+    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+      t.addEventListener(ev, function(){ tabbarEl.classList.remove('pressing'); });
     });
   });
   document.querySelectorAll('[data-nav]').forEach(function(el){
