@@ -631,6 +631,8 @@ p.body b{ color:var(--cream); font-weight:700; }
 /* ================= VENUE / FIND ================= */
 .venue{ margin:14px 20px 0; border-radius:var(--r-md); overflow:hidden; padding:0; }
 .venue .vimg{ height:150px; position:relative; overflow:hidden; }
+.venue .vimg.tall{ height:auto; aspect-ratio:9/16; }
+.venue .vimg.tall video{ position:absolute; inset:0; width:100%; height:100%; }
 .venue .vimg img{ width:100%; height:100%; object-fit:cover; display:block; }
 .venue .vimg .shade{ position:absolute; inset:0; background:linear-gradient(0deg, rgba(5,11,20,0.55), transparent 60%); }
 .venue .vbody{ padding:14px 15px 15px; }
@@ -947,7 +949,7 @@ p.body b{ color:var(--cream); font-weight:700; }
 
         <div class="venue g press shine rv" data-nav="find" role="button" tabindex="0">
           <i class="sweep"></i>
-          <div class="vimg">
+          <div class="vimg tall">
             <video autoplay muted loop playsinline src="real/lager-tap-pier.mp4" aria-label="NWPRT Lager pouring at the pier"></video>
             <span class="shade"></span>
           </div>
