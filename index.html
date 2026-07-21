@@ -156,8 +156,8 @@ body::after{
   background:
     linear-gradient(158deg, rgba(251,246,236,0.085), rgba(251,246,236,0.02) 34%, rgba(5,11,20,0.10) 74%, rgba(251,246,236,0.03)) padding-box,
     linear-gradient(165deg, rgba(251,246,236,0.36), rgba(217,185,104,0.30) 28%, rgba(217,185,104,0.10) 55%, rgba(5,11,20,0.55) 92%) border-box;
-  -webkit-backdrop-filter:blur(16px) saturate(155%);
-  backdrop-filter:blur(16px) saturate(155%);
+  -webkit-backdrop-filter:blur(13px) saturate(150%);
+  backdrop-filter:blur(13px) saturate(150%);
   box-shadow:
     inset 0 1px 0 rgba(251,246,236,0.15),
     inset 0 -1px 0 rgba(5,11,20,0.55),
@@ -191,8 +191,8 @@ body::after{
 }
 .g-hi{
   border-radius:var(--r-lg);
-  -webkit-backdrop-filter:blur(24px) saturate(165%) brightness(1.04);
-  backdrop-filter:blur(24px) saturate(165%) brightness(1.04);
+  -webkit-backdrop-filter:blur(18px) saturate(160%) brightness(1.03);
+  backdrop-filter:blur(18px) saturate(160%) brightness(1.03);
   box-shadow:
     inset 0 1.5px 0 rgba(251,246,236,0.20),
     inset 0 -1px 0 rgba(5,11,20,0.6),
@@ -270,7 +270,7 @@ p.body b{ color:var(--cream); font-weight:700; }
 /* ================= HEADER — boxed NWPRT® mark ================= */
 .appheader{
   flex:0 0 auto; display:flex; align-items:center; justify-content:space-between;
-  padding:4px 20px 13px; border-bottom:1px solid var(--line);
+  padding:44px 20px 13px; border-bottom:1px solid var(--line);   /* clears the desktop island */
   position:relative; z-index:40;
 }
 .brandlock{ display:flex; align-items:center; gap:11px; border-radius:14px; padding:4px 6px; margin:-4px -6px; }
@@ -351,6 +351,8 @@ p.body b{ color:var(--cream); font-weight:700; }
   -webkit-overflow-scrolling:touch;
 }
 .screen.active{ opacity:1; transform:none; pointer-events:auto; }
+/* a screen that isn't on-stage stops animating — frees the GPU for the visible one */
+.screen:not(.active) *{ animation-play-state:paused !important; }
 .sec{ padding:18px 20px 0; text-align:center; }
 
 /* reveal-on-enter: settle from blur */
@@ -1075,6 +1077,7 @@ p.body b{ color:var(--cream); font-weight:700; }
   .stage{ padding:0; perspective:none; height:100dvh; min-height:0; }
   .phone{ width:100vw; height:100%; border-radius:0; box-shadow:none; transform:none; }
   .island{ display:none; }
+  .appheader{ padding-top:calc(env(safe-area-inset-top, 0px) + 8px); }   /* no island on-device; just clear the notch */
   .credit{ display:none; }
 }
 @media (prefers-reduced-motion:reduce){
@@ -1103,16 +1106,6 @@ p.body b{ color:var(--cream); font-weight:700; }
       <span class="swell"></span>
       <span class="glowband"></span>
       <span class="spark"></span><span class="spark"></span><span class="spark"></span>
-      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
-    </div>
-
-    <div class="statusbar" aria-hidden="true">
-      <span id="clock">9:41</span>
-      <div class="icons">
-        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><rect x="0" y="6" width="3" height="5" rx="0.5" fill="#FBF6EC"/><rect x="4.3" y="4" width="3" height="7" rx="0.5" fill="#FBF6EC"/><rect x="8.6" y="2" width="3" height="9" rx="0.5" fill="#FBF6EC"/><rect x="13" y="0" width="3" height="11" rx="0.5" fill="#FBF6EC" opacity="0.5"/></svg>
-        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M8 2.2C10.5 2.2 12.7 3.2 14.3 4.8L15.4 3.7C13.5 1.8 10.9 0.6 8 0.6S2.5 1.8 0.6 3.7L1.7 4.8C3.3 3.2 5.5 2.2 8 2.2Z" fill="#FBF6EC"/><path d="M8 5.4C9.7 5.4 11.2 6.1 12.3 7.1L13.4 6C11.9 4.6 10 3.8 8 3.8S4.1 4.6 2.6 6L3.7 7.1C4.8 6.1 6.3 5.4 8 5.4Z" fill="#FBF6EC"/><circle cx="8" cy="9.4" r="1.4" fill="#FBF6EC"/></svg>
-        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2.5" stroke="#FBF6EC" opacity="0.6"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="#FBF6EC"/><rect x="21.5" y="3.2" width="1.6" height="4.6" rx="0.8" fill="#FBF6EC" opacity="0.6"/></svg>
-      </div>
     </div>
 
     <header class="appheader">
@@ -1747,7 +1740,7 @@ p.body b{ color:var(--cream); font-weight:700; }
     var d = new Date();
     var h = d.getHours(), m = d.getMinutes();
     var hh = ((h + 11) % 12) + 1;
-    document.getElementById('clock').textContent = hh + ':' + (m < 10 ? '0' : '') + m;
+    var ck = document.getElementById('clock'); if (ck) ck.textContent = hh + ':' + (m < 10 ? '0' : '') + m;
     var g = h < 5 ? 'Late night, Newport' : h < 12 ? 'Good morning, Newport' : h < 17 ? 'Good afternoon, Newport' : 'Good evening, Newport';
     document.getElementById('greeting').textContent = g;
   }
@@ -1814,29 +1807,18 @@ p.body b{ color:var(--cream); font-weight:700; }
   }
   function queue(){ if (!raf) raf = requestAnimationFrame(apply); }
   if (!reduced){
+    /* MOUSE ONLY. A touch drag fires pointermove every frame; letting it drive the
+       light re-tilts the whole phone (see .phone transform) and forces every glass
+       backdrop-filter to re-blur per scroll frame — that is the "heavy" feel. Gyro is
+       dropped for the same reason: on a phone it should be static and snappy. */
     window.addEventListener('pointermove', function(e){
+      if (e.pointerType && e.pointerType !== 'mouse') return;
       lx = (e.clientX / window.innerWidth) * 100;
       ly = (e.clientY / window.innerHeight) * 100;
       tx = (e.clientX / window.innerWidth - 0.5) * 2;
       ty = (e.clientY / window.innerHeight - 0.5) * 2;
       queue();
     }, { passive:true });
-    function wireGyro(){
-      window.addEventListener('deviceorientation', function(e){
-        if (e.gamma == null) return;
-        tx = Math.max(-1, Math.min(1, e.gamma / 28));
-        ty = Math.max(-1, Math.min(1, (e.beta - 42) / 32));
-        lx = 50 + tx * 26; ly = 32 + ty * 22;
-        queue();
-      }, { passive:true });
-    }
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-      var once = function(){
-        DeviceOrientationEvent.requestPermission().then(function(s){ if (s === 'granted') wireGyro(); }).catch(function(){});
-        window.removeEventListener('touchend', once);
-      };
-      window.addEventListener('touchend', once, { once:true });
-    } else { wireGyro(); }
   }
 
   /* ---------- press physics — releases the instant a swipe starts ----------
