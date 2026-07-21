@@ -152,62 +152,116 @@ body::after{
 .g{
   position:relative;
   border-radius:var(--r-md);
-  border:1px solid transparent;
+  border:1.5px solid transparent;
   background:
-    linear-gradient(158deg, rgba(251,246,236,0.085), rgba(251,246,236,0.02) 34%, rgba(5,11,20,0.10) 74%, rgba(251,246,236,0.03)) padding-box,
-    linear-gradient(165deg, rgba(251,246,236,0.36), rgba(217,185,104,0.30) 28%, rgba(217,185,104,0.10) 55%, rgba(5,11,20,0.55) 92%) border-box;
+    /* fill: subtle glass tint w/ inner shadow */
+    linear-gradient(158deg, rgba(251,246,236,0.11), rgba(251,246,236,0.02) 32%, rgba(5,11,20,0.16) 70%, rgba(251,246,236,0.045)) padding-box,
+    /* rim: brilliant top-left ignition → dark valley → cyan bottom-right pop */
+    linear-gradient(165deg,
+      rgba(255,252,240,0.98),               /* top-left ignition */
+      rgba(234,208,143,0.66) 12%,
+      rgba(217,185,104,0.26) 30%,
+      rgba(5,11,20,0.72) 62%,               /* dark valley */
+      rgba(154,211,232,0.60) 86%,           /* cyan pop bottom-right */
+      rgba(251,246,236,0.34)
+    ) border-box;
   -webkit-backdrop-filter:blur(13px) saturate(150%);
   backdrop-filter:blur(13px) saturate(150%);
   box-shadow:
-    inset 0 1px 0 rgba(251,246,236,0.15),
-    inset 0 -1px 0 rgba(5,11,20,0.55),
-    inset 0 0 0 1px rgba(251,246,236,0.03),
-    0 18px 38px -18px rgba(0,0,0,0.75),
-    0 4px 12px -6px rgba(0,0,0,0.5),
-    0 0 28px -14px rgba(217,185,104,0.28);
+    inset 0 1.5px 0 rgba(251,246,236,0.30),           /* top rim highlight */
+    inset 0 -1px 0 rgba(5,11,20,0.60),
+    inset 2.5px 2.5px 0 -1.5px rgba(200,228,246,0.34),   /* cyan corner top-left */
+    inset -2.5px -2.5px 0 -1.5px rgba(234,208,143,0.30), /* gold corner bottom-right */
+    inset 0 0 0 1px rgba(251,246,236,0.04),
+    0 22px 46px -20px rgba(0,0,0,0.80),
+    0 6px 14px -6px rgba(0,0,0,0.55),
+    0 0 40px -18px rgba(217,185,104,0.40);
   overflow:hidden;
 }
-/* pearlescent interior — tide → champagne → violet, angle-driven */
+/* interior: the specular strokes that sell the glass */
 .g::before{
   content:""; position:absolute; inset:0; border-radius:inherit;
   background:
-    radial-gradient(300px 200px at var(--lx) var(--ly), rgba(251,246,236,0.075), transparent 62%),
+    /* upper-left specular sweep — the money stroke */
+    linear-gradient(118deg, transparent 22%, rgba(251,246,236,0.30) 32%, rgba(251,246,236,0.05) 42%, transparent 52%),
+    /* bottom-right cyan glint */
+    linear-gradient(298deg, transparent 60%, rgba(154,211,232,0.16) 74%, transparent 86%),
+    /* pointer-driven soft warmth */
+    radial-gradient(320px 220px at var(--lx) var(--ly), rgba(251,246,236,0.10), transparent 60%),
+    /* pearlescent iridescence */
     conic-gradient(from calc(210deg + var(--rx) * 40deg) at 30% 18%,
-      transparent, rgba(154,211,232,0.045) 18%, rgba(217,185,104,0.055) 38%,
-      rgba(176,150,255,0.030) 58%, transparent 74%);
+      transparent, rgba(154,211,232,0.06) 18%, rgba(234,208,143,0.07) 38%,
+      rgba(176,150,255,0.04) 58%, transparent 74%);
   pointer-events:none;
   transition:background var(--t-med) var(--e-settle);
 }
-/* micro surface + fresnel edge ring + chromatic fringe */
+/* micro surface grain — cofuture recipe */
 .g::after{
   content:""; position:absolute; inset:0; border-radius:inherit;
   background-image:var(--noise); background-size:160px;
-  opacity:0.04; mix-blend-mode:overlay;
-  box-shadow:
-    inset 0 0 0 1px rgba(251,246,236,0.02),
-    inset 1.5px 1.5px 0 -1px rgba(154,211,232,0.10),
-    inset -1.5px -1.5px 0 -1px rgba(217,150,80,0.10);
+  opacity:0.055; mix-blend-mode:overlay;
   pointer-events:none;
 }
 .g-hi{
   border-radius:var(--r-lg);
-  -webkit-backdrop-filter:blur(18px) saturate(160%) brightness(1.03);
-  backdrop-filter:blur(18px) saturate(160%) brightness(1.03);
+  border:2px solid transparent;
+  background:
+    linear-gradient(158deg, rgba(251,246,236,0.13), rgba(251,246,236,0.02) 30%, rgba(5,11,20,0.18) 68%, rgba(251,246,236,0.055)) padding-box,
+    linear-gradient(165deg,
+      rgba(255,252,240,1),
+      rgba(234,208,143,0.78) 10%,
+      rgba(217,185,104,0.32) 28%,
+      rgba(5,11,20,0.78) 60%,
+      rgba(154,211,232,0.72) 85%,
+      rgba(251,246,236,0.44)
+    ) border-box;
+  -webkit-backdrop-filter:blur(18px) saturate(165%) brightness(1.04);
+  backdrop-filter:blur(18px) saturate(165%) brightness(1.04);
   box-shadow:
-    inset 0 1.5px 0 rgba(251,246,236,0.20),
-    inset 0 -1px 0 rgba(5,11,20,0.6),
-    inset 0 0 0 1px rgba(251,246,236,0.035),
-    0 30px 60px -25px rgba(0,0,0,0.85),
-    0 8px 20px -10px rgba(0,0,0,0.6),
-    0 0 46px -16px rgba(217,185,104,0.36);
+    inset 0 2px 0 rgba(251,246,236,0.40),
+    inset 0 -1.5px 0 rgba(5,11,20,0.65),
+    inset 3px 3px 0 -2px rgba(200,228,246,0.46),
+    inset -3px -3px 0 -2px rgba(234,208,143,0.42),
+    inset 0 0 0 1px rgba(251,246,236,0.06),
+    0 36px 68px -26px rgba(0,0,0,0.9),
+    0 10px 24px -12px rgba(0,0,0,0.65),
+    0 0 62px -18px rgba(217,185,104,0.50);
+}
+/* g-hi doubles the specular stroke — hero-scale glass reads bolder */
+.g-hi::before{
+  background:
+    linear-gradient(118deg, transparent 20%, rgba(251,246,236,0.40) 30%, rgba(251,246,236,0.08) 42%, transparent 54%),
+    linear-gradient(298deg, transparent 58%, rgba(154,211,232,0.22) 72%, transparent 86%),
+    radial-gradient(360px 260px at var(--lx) var(--ly), rgba(251,246,236,0.13), transparent 60%),
+    conic-gradient(from calc(210deg + var(--rx) * 40deg) at 30% 18%,
+      transparent, rgba(154,211,232,0.08) 18%, rgba(234,208,143,0.10) 38%,
+      rgba(176,150,255,0.06) 58%, transparent 74%);
 }
 .g-lo{
   -webkit-backdrop-filter:none; backdrop-filter:none;
+  border:1.5px solid transparent;
   background:
-    linear-gradient(158deg, rgba(23,38,60,0.88), rgba(12,22,38,0.90) 60%, rgba(16,28,48,0.88)) padding-box,
-    linear-gradient(165deg, rgba(251,246,236,0.26), rgba(217,185,104,0.22) 30%, rgba(217,185,104,0.07) 58%, rgba(5,11,20,0.5)) border-box;
+    linear-gradient(158deg, rgba(23,38,60,0.86), rgba(12,22,38,0.90) 55%, rgba(16,28,48,0.86)) padding-box,
+    linear-gradient(165deg,
+      rgba(251,246,236,0.60),
+      rgba(234,208,143,0.44) 18%,
+      rgba(217,185,104,0.20) 50%,
+      rgba(5,11,20,0.62) 78%,
+      rgba(154,211,232,0.44)
+    ) border-box;
+  box-shadow:
+    inset 0 1.5px 0 rgba(251,246,236,0.22),
+    inset 0 -1px 0 rgba(5,11,20,0.55),
+    inset 2px 2px 0 -1px rgba(200,228,246,0.26),
+    inset -2px -2px 0 -1px rgba(234,208,143,0.22),
+    0 12px 24px -10px rgba(0,0,0,0.75),
+    0 0 22px -12px rgba(217,185,104,0.30);
 }
-.g-lo::before{ background:radial-gradient(200px 130px at var(--lx) var(--ly), rgba(251,246,236,0.05), transparent 60%); }
+.g-lo::before{
+  background:
+    linear-gradient(118deg, transparent 22%, rgba(251,246,236,0.22) 32%, rgba(251,246,236,0.02) 42%, transparent 52%),
+    radial-gradient(200px 140px at var(--lx) var(--ly), rgba(251,246,236,0.07), transparent 60%);
+}
 /* blue product optic — lager label glass */
 .g-blue{
   background:
@@ -396,14 +450,61 @@ p.body b{ color:var(--cream); font-weight:800; }
 }
 @keyframes pip{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.45; transform:scale(.78);} }
 
-/* est strip */
+/* est strip — three glass pills with icon roundels */
 .eststrip{
-  display:flex; align-items:center; justify-content:center; gap:9px;
-  margin:14px 20px 0; padding:11px 6px; border-radius:var(--r-sm);
-  text-align:center; white-space:nowrap;
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;
+  margin:14px 16px 0; padding:0;
 }
-.eststrip.spec{ font-size:8.5px; letter-spacing:0.15em; }
-.eststrip .sep{ width:3px; height:3px; border-radius:50%; background:var(--gold); opacity:.65; flex:0 0 auto; }
+.estpill{
+  padding:11px 10px; border-radius:var(--r-sm);
+  display:flex; align-items:center; gap:9px; text-align:left;
+}
+.estpill .estic{
+  flex:0 0 auto; width:28px; height:28px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+}
+.estpill .esttx{ display:flex; flex-direction:column; gap:2px; line-height:1; min-width:0; }
+.estpill .estlabel{ font-size:7.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--faint); font-weight:800; }
+.estpill .estvalue{ font-size:11px; font-weight:900; letter-spacing:-0.005em; color:var(--cream); }
+
+/* hero left-overlay layout (matches reference — text vertical on left, photo dominant) */
+.hero-l{ padding:0; }
+.hero-l .frame{ aspect-ratio:5/4.4; position:relative; }
+.hero-l .frame img, .hero-l .frame video{ height:100%; transform:none; }
+.hero-l .heroover{
+  position:absolute; inset:0; z-index:2;
+  display:flex; flex-direction:column; justify-content:space-between; align-items:stretch;
+  padding:22px 20px 18px;
+  background:linear-gradient(96deg, rgba(5,11,20,0.72) 0%, rgba(5,11,20,0.38) 42%, transparent 66%);
+  pointer-events:none;
+}
+.hero-l .h-eye{
+  font-size:9px; letter-spacing:0.30em; text-transform:uppercase;
+  color:var(--gold); font-weight:800; margin:0 0 12px;
+}
+.hero-l .h-title{
+  font-family:'Archivo',sans-serif;
+  font-weight:900; letter-spacing:-0.045em; color:var(--cream);
+  font-size:30px; line-height:0.94; margin:0 0 14px;
+  text-shadow:0 4px 24px rgba(0,0,0,0.55);
+}
+.hero-l .h-sub{
+  font-size:11.5px; line-height:1.35; color:var(--dim); font-weight:600;
+  margin:0 0 16px; max-width:170px;
+}
+.hero-l .h-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:9px 15px; border-radius:999px;
+  font-size:9.5px; letter-spacing:0.20em; text-transform:uppercase; font-weight:800; color:var(--cream);
+  align-self:flex-start; pointer-events:auto;
+}
+.hero-l .h-pill .pdot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--gold-hi); box-shadow:0 0 8px 1px rgba(234,208,143,0.85);
+}
+.hero-l .hdots{ display:flex; gap:6px; align-self:flex-end; margin-top:auto; }
+.hero-l .hdots i{ width:5px; height:5px; border-radius:50%; background:rgba(242,229,200,0.4); transition:all var(--t-med) var(--e-out); }
+.hero-l .hdots i.on{ background:var(--gold); width:14px; border-radius:3px; }
 
 /* ================= PRODUCT RAIL ================= */
 .rail{
@@ -447,6 +548,17 @@ p.body b{ color:var(--cream); font-weight:800; }
 .raildots{ display:flex; gap:5px; justify-content:center; padding:2px 0 0; }
 .raildots i{ width:4px; height:4px; border-radius:50%; background:var(--faint); opacity:.5; transition:all var(--t-med) var(--e-out); }
 .raildots i.on{ width:14px; border-radius:3px; background:var(--gold); opacity:1; }
+/* rail-card arrow chip — the reference tap affordance */
+.railcard .rarrow{
+  position:absolute; left:12px; bottom:12px; z-index:3;
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--cream);
+  transition:transform var(--t-med) var(--e-spring);
+}
+.railcard .rarrow svg{ opacity:.92; }
+.railcard.is-down .rarrow{ transform:translateX(3px); }
+.railcard .meta{ padding-bottom:14px; }  /* clear the arrow */
 
 /* ================= CARDS / STATS / GRID ================= */
 .card{ margin:14px 20px 0; padding:16px 17px; border-radius:var(--r-md); text-align:center; }
@@ -1428,24 +1540,41 @@ p.body b{ color:var(--cream); font-weight:800; }
           <span class="spec" id="dateline" style="font-size:8px; letter-spacing:0.12em; text-align:right; white-space:nowrap;"></span>
         </div>
 
-        <div class="hero g g-hi press shine rv" data-nav="lineup" role="button" tabindex="0" aria-label="The Original — Premium Lager">
+        <div class="hero hero-l g g-hi press shine rv" data-nav="lineup" role="button" tabindex="0" aria-label="The Original — NWPRT Premium Lager">
           <i class="sweep"></i>
           <div class="frame">
-            <img src="real/banner-pour.jpg" alt="The green NWPRT tap pouring a fresh lager in front of the Premium Lager banner">
-            <div class="cap">
+            <img src="real/lager-splash.jpg" alt="NWPRT Premium Lager with a golden lager splash and label">
+            <div class="heroover">
               <div>
-                <div class="t1">The Original</div>
-                <div class="t2">NWPRT&reg; Premium Lager</div>
+                <p class="h-eye">The Original</p>
+                <h2 class="h-title">NWPRT<br>PREMIUM<br>LAGER</h2>
+                <p class="h-sub">Crisp. Clean. Coastal. Brewed for here.</p>
+                <span class="h-pill g g-lo"><span class="pdot"></span>On Tap</span>
               </div>
-              <span class="livechip g g-lo"><span class="pip"></span>On Tap</span>
+              <div class="hdots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
             </div>
           </div>
         </div>
 
-        <div class="eststrip g g-lo spec rv">
-          <span>EST. <b>2019</b></span><span class="sep"></span>
-          <span>BEVERAGE SINCE <b>2022</b></span><span class="sep"></span>
-          <span>NEWPORT BEACH</span>
+        <div class="eststrip rv">
+          <div class="estpill g g-lo">
+            <span class="estic g g-lo">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#EAD08F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 15v6M6 3h12v4a6 6 0 0 1-12 0z"/></svg>
+            </span>
+            <span class="esttx"><span class="estlabel">Est.</span><span class="estvalue">2019</span></span>
+          </div>
+          <div class="estpill g g-lo">
+            <span class="estic g g-lo">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#EAD08F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </span>
+            <span class="esttx"><span class="estlabel">Beverage</span><span class="estvalue">Since 2022</span></span>
+          </div>
+          <div class="estpill g g-lo">
+            <span class="estic g g-lo">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#EAD08F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+            <span class="esttx"><span class="estlabel">Newport</span><span class="estvalue">Beach</span></span>
+          </div>
         </div>
 
         <div class="ticker rv" aria-hidden="true">
@@ -1455,9 +1584,11 @@ p.body b{ color:var(--cream); font-weight:800; }
           </div>
         </div>
 
-        <div class="sec rv">
-          <h1 class="h-display">The house pour of the NWPRT lifestyle.</h1>
-          <p class="body" style="margin:0;">Lager. Seltzer. Tequila. One brand, every occasion &mdash; brewed, poured, and lived on this coastline. <b>The pour matches the place.</b></p>
+        <div class="card g rv" style="text-align:left; padding:22px 20px 20px; margin-top:16px;">
+          <p class="eyebrow" style="margin:0 0 12px; text-align:left;">The Lifestyle</p>
+          <h1 class="h-display" style="text-align:left; font-size:26px; line-height:1.04; margin:0 0 12px;">The house pour of<br>the NWPRT lifestyle.</h1>
+          <p class="body" style="text-align:left; margin:0 0 6px;">Lager. Seltzer. Tequila. One brand, every occasion &mdash; brewed, poured, and lived on this coastline.</p>
+          <p class="body" style="text-align:left; margin:0; color:var(--gold-hi); font-weight:800;">The pour matches the place.</p>
         </div>
 
         <div class="rail rv" id="rail" aria-label="The lineup">
@@ -1466,6 +1597,9 @@ p.body b{ color:var(--cream); font-weight:800; }
             <span class="ph"><img src="real/lager-wave.jpg" alt="NWPRT Premium Lager can inside a curling golden lager wave"></span>
             <span class="shade"></span>
             <span class="tagpx blue">The Original</span>
+            <span class="rarrow g g-lo" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
             <span class="meta"><span class="nm">Premium Lager</span><span class="sb">Est. 2022 &middot; On Tap</span></span>
           </button>
           <button class="railcard g press shine" data-nav="lineup" data-seg="seltzer">
@@ -1473,6 +1607,9 @@ p.body b{ color:var(--cream); font-weight:800; }
             <span class="ph"><img src="real/seltzer-lime.jpg" alt="NWPRT Premium Seltzer, Sea Salt Lime"></span>
             <span class="shade"></span>
             <span class="tagpx" style="background:linear-gradient(135deg,#A8E6C9,#6FC9A3); color:var(--ink0); box-shadow:0 6px 14px -6px rgba(111,201,163,0.7);">4 Flavors</span>
+            <span class="rarrow g g-lo" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
             <span class="meta"><span class="nm">Premium Seltzer</span><span class="sb">Since Day One</span></span>
           </button>
           <button class="railcard g press shine" data-nav="lineup" data-seg="tequila">
@@ -1480,6 +1617,9 @@ p.body b{ color:var(--cream); font-weight:800; }
             <span class="ph"><img src="real/tequila-burst.jpg" alt="NWPRT Tequila Blanco in a crystal splash with lime and agave"></span>
             <span class="shade"></span>
             <span class="tagpx">Next Chapter</span>
+            <span class="rarrow g g-lo" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
             <span class="meta"><span class="nm">Tequila Blanco</span><span class="sb">Casa de Reyes</span></span>
           </button>
           <button class="railcard lockcard g press shine" data-nav="lineup" data-seg="dev" aria-label="In development">
@@ -2190,7 +2330,12 @@ p.body b{ color:var(--cream); font-weight:800; }
   document.getElementById('dateline').innerHTML = sunLine();
   setInterval(function(){ document.getElementById('dateline').innerHTML = sunLine(); }, 60000);
 
-  /* ---------- environment light: pointer + device tilt ---------- */
+  /* ---------- environment light: pointer + device tilt ----------
+     Desktop mouse: writes all 4 vars — --lx/--ly (specular position, cheap gradient
+     repaint) AND --rx/--ry (drives .phone tilt + conic angle + hero parallax).
+     Mobile gyro: writes ONLY --lx/--ly. Do NOT touch --rx/--ry — that would tilt
+     the phone shell and force every backdrop-filter descendant to re-rasterize
+     per gyro frame, which is what "heavy" felt like before the perf pass. */
   var lx = 38, ly = 22, tx = 0, ty = 0, raf = null;
   function apply(){
     raf = null;
@@ -2199,12 +2344,13 @@ p.body b{ color:var(--cream); font-weight:800; }
     root.style.setProperty('--rx', tx.toFixed(3));
     root.style.setProperty('--ry', ty.toFixed(3));
   }
-  function queue(){ if (!raf) raf = requestAnimationFrame(apply); }
+  function applyLightOnly(){
+    raf = null;
+    root.style.setProperty('--lx', lx.toFixed(2) + '%');
+    root.style.setProperty('--ly', ly.toFixed(2) + '%');
+  }
+  function queue(fn){ if (!raf) raf = requestAnimationFrame(fn || apply); }
   if (!reduced){
-    /* MOUSE ONLY. A touch drag fires pointermove every frame; letting it drive the
-       light re-tilts the whole phone (see .phone transform) and forces every glass
-       backdrop-filter to re-blur per scroll frame — that is the "heavy" feel. Gyro is
-       dropped for the same reason: on a phone it should be static and snappy. */
     window.addEventListener('pointermove', function(e){
       if (e.pointerType && e.pointerType !== 'mouse') return;
       lx = (e.clientX / window.innerWidth) * 100;
@@ -2213,6 +2359,31 @@ p.body b{ color:var(--cream); font-weight:800; }
       ty = (e.clientY / window.innerHeight - 0.5) * 2;
       queue();
     }, { passive:true });
+
+    /* gyro — light-only, no shell tilt */
+    var attachGyro = function(){
+      window.addEventListener('deviceorientation', function(e){
+        if (e.gamma == null || e.beta == null) return;
+        var gx = Math.max(-1, Math.min(1, e.gamma / 40));
+        var gy = Math.max(-1, Math.min(1, (e.beta - 40) / 40));
+        lx = 50 + gx * 32;   /* -30..80% */
+        ly = 30 + gy * 22;
+        queue(applyLightOnly);
+      });
+    };
+    if (window.DeviceOrientationEvent){
+      if (typeof DeviceOrientationEvent.requestPermission === 'function'){
+        /* iOS 13+ demands a user gesture — attach on the first touch and never again */
+        document.body.addEventListener('touchend', function once(){
+          document.body.removeEventListener('touchend', once);
+          DeviceOrientationEvent.requestPermission().then(function(s){
+            if (s === 'granted') attachGyro();
+          }).catch(function(){});
+        });
+      } else {
+        attachGyro();
+      }
+    }
   }
 
   /* ---------- press physics — releases the instant a swipe starts ----------
