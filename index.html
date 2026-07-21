@@ -546,7 +546,51 @@ p.body b{ color:var(--cream); font-weight:700; }
 .taglist b{ color:var(--gold); }
 
 /* ================= FLYWHEEL ================= */
-.fwwrap{ position:relative; width:286px; height:286px; margin:16px auto 4px; }
+.fwwrap{ position:relative; width:286px; height:286px; margin:16px auto 4px; perspective:1400px; }
+.fwflip{
+  position:absolute; inset:0; transform-style:preserve-3d;
+  transition:transform .9s var(--e-settle);
+}
+.fwflip.flipped{ transform:rotateY(180deg); }
+.fwface{ position:absolute; inset:0; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
+.fwback{
+  transform:rotateY(180deg); border-radius:24px; overflow:hidden;
+  background:linear-gradient(175deg, #FFFCF6, var(--cream) 55%, var(--sand));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    inset 0 0 0 1px rgba(217,185,104,0.4),
+    0 26px 50px -22px rgba(0,0,0,0.85),
+    0 0 40px -12px rgba(217,185,104,0.4);
+  display:flex; flex-direction:column;
+}
+.fwback .fpic{ height:41%; position:relative; overflow:hidden; flex:0 0 auto; }
+.fwback .fpic img{ width:100%; height:100%; object-fit:cover; display:block; }
+.fwback .fpic::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(0deg, rgba(251,246,236,0.95), transparent 40%);
+}
+.fwback .fbody{ flex:1; padding:2px 16px 12px; text-align:left; overflow-y:auto; }
+.fwback .ft{ font-weight:900; letter-spacing:-0.03em; color:var(--ink1); font-size:15.5px; margin:0 0 2px; }
+.fwback .fg{ font-family:'Playfair Display',serif; font-style:italic; font-weight:500; color:var(--gold-deep); font-size:11px; margin:0 0 8px; }
+.fwback ul{ margin:0; padding:0; list-style:none; }
+.fwback li{
+  font-size:10.5px; line-height:1.5; color:#31435c; font-weight:600;
+  padding:3px 0 3px 15px; position:relative;
+}
+.fwback li::before{
+  content:""; position:absolute; left:2px; top:9px; width:5px; height:5px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-hi), var(--gold-deep) 85%);
+  box-shadow:0 0 4px rgba(217,185,104,0.6);
+}
+.fwback .fclose{
+  position:absolute; top:9px; right:9px; z-index:3;
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  background:rgba(10,20,31,0.55); border:1px solid rgba(251,246,236,0.3);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  transition:transform var(--t-fast) var(--e-out);
+}
+.fwback .fclose:active{ transform:scale(0.88); }
 .fwring{ position:absolute; inset:0; pointer-events:none; z-index:1; }
 .fwring .orbit{ animation:orbit 40s linear infinite; transform-origin:143px 143px; }
 @keyframes orbit{ to{ transform:rotate(360deg); } }
@@ -1012,6 +1056,7 @@ p.body b{ color:var(--cream); font-weight:700; }
   .rv{ opacity:1; transform:none; filter:none; }
   /* direct-touch feedback stays alive — it's response, not ambient motion */
   .tab, .tabglow, .press, .btn{ transition-duration:.12s !important; }
+  .fwflip{ transition-duration:.9s !important; }
   .tab.sprung{ animation:tabspring .4s var(--e-settle) !important; animation-iteration-count:1 !important; }
   .tabglow.sprung{ animation:puckspring .44s var(--e-settle) !important; animation-iteration-count:1 !important; }
 }
@@ -1441,19 +1486,34 @@ p.body b{ color:var(--cream); font-weight:700; }
           <p class="eyebrow" style="text-align:center; margin:0;">The Flywheel &middot; <span style="opacity:0.55; text-transform:none; letter-spacing:0.02em; font-weight:600;">tap a node</span></p>
         </div>
         <div class="fwwrap rv">
-          <svg class="fwring" width="286" height="286" viewBox="0 0 286 286" aria-hidden="true">
-            <g class="orbit">
-              <circle cx="143" cy="143" r="110" fill="none" stroke="#D9B968" stroke-width="1" opacity="0.20" stroke-dasharray="2 7"/>
-            </g>
-            <circle class="arc" id="fwArc" cx="143" cy="143" r="110" fill="none" stroke="#EAD08F" stroke-width="1.8" opacity="0" stroke-dasharray="8 683" stroke-linecap="round" transform="rotate(-90 143 143)"/>
-          </svg>
-          <button class="fwnode g g-lo press n1" data-fw="0">Larger<br>Community</button>
-          <button class="fwnode g g-lo press n2" data-fw="1">Demand</button>
-          <button class="fwnode g g-lo press n3" data-fw="2">Strategic<br>Partners</button>
-          <button class="fwnode g g-lo press n4" data-fw="3">New<br>Categories</button>
-          <button class="fwnode g g-lo press n5" data-fw="4">More<br>Customers</button>
-          <button class="fwnode g g-lo press n6" data-fw="5">Stronger<br>Brand</button>
-          <button class="fwcenter press" id="fwCenter">Community</button>
+          <div class="fwflip" id="fwFlip">
+            <div class="fwface fwfront">
+              <svg class="fwring" width="286" height="286" viewBox="0 0 286 286" aria-hidden="true">
+                <g class="orbit">
+                  <circle cx="143" cy="143" r="110" fill="none" stroke="#D9B968" stroke-width="1" opacity="0.20" stroke-dasharray="2 7"/>
+                </g>
+                <circle class="arc" id="fwArc" cx="143" cy="143" r="110" fill="none" stroke="#EAD08F" stroke-width="1.8" opacity="0" stroke-dasharray="8 683" stroke-linecap="round" transform="rotate(-90 143 143)"/>
+              </svg>
+              <button class="fwnode g g-lo press n1" data-fw="0">Larger<br>Community</button>
+              <button class="fwnode g g-lo press n2" data-fw="1">Demand</button>
+              <button class="fwnode g g-lo press n3" data-fw="2">Strategic<br>Partners</button>
+              <button class="fwnode g g-lo press n4" data-fw="3">New<br>Categories</button>
+              <button class="fwnode g g-lo press n5" data-fw="4">More<br>Customers</button>
+              <button class="fwnode g g-lo press n6" data-fw="5">Stronger<br>Brand</button>
+              <button class="fwcenter press" id="fwCenter">Community</button>
+            </div>
+            <div class="fwface fwback" id="fwBack" aria-live="polite">
+              <button class="fclose press" id="fwClose" aria-label="Back to the flywheel">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FBF6EC" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+              <div class="fpic"><img id="fwImg" src="real/banner-pour.jpg" alt=""></div>
+              <div class="fbody">
+                <p class="ft" id="fwTitle">Larger Community</p>
+                <p class="fg" id="fwTag">Every pour brings someone new.</p>
+                <ul id="fwList"></ul>
+              </div>
+            </div>
+          </div>
         </div>
         <p class="fwcap" id="fwCap">Every successful category strengthens every other category.</p>
 
@@ -1998,16 +2058,49 @@ p.body b{ color:var(--cream); font-weight:700; }
     fwSet(fwIdx);
   }
   if (!reduced) fwTimer = setInterval(fwCycle, 3200);
+
+  /* tap a node -> flip the wheel to a cream detail panel (photo + bullets),
+     matching the cofuture ecosystem flip. */
+  var fwDetails = [
+    { img:'real/banner-pour.jpg',  title:'Larger Community',  tag:'Every pour brings someone new.',
+      pts:['More people in the NWPRT world','Locals and visitors, side by side','The lifestyle, shared on the water'] },
+    { img:'real/draft-pour.jpg',   title:'Demand',            tag:'Visibility pulls the brand forward.',
+      pts:['Seen on every table','Pulled into new rooms','The coastline starts asking for it'] },
+    { img:'real/lager-keg-pier.jpg', title:'Strategic Partners', tag:'Venues that earn the coastline.',
+      pts:['Restaurants and bars','Marinas and pier stops','Partners who fit the lifestyle'] },
+    { img:'real/tequila-burst.jpg', title:'New Categories',    tag:'The next pour earns its place.',
+      pts:['Lager, Seltzer, Tequila','More beverages in development','One brand, every occasion'] },
+    { img:'real/lager-wave.jpg',   title:'More Customers',     tag:'Every category introduces someone new.',
+      pts:['New drinkers, new fans','Cross-category discovery','The circle keeps widening'] },
+    { img:'real/lager-splash.jpg', title:'Stronger Brand',     tag:'Each pour deepens the story.',
+      pts:['More recognition on the coast','Deeper loyalty every season','The lifestyle, cemented'] }
+  ];
+  var fwFlip = document.getElementById('fwFlip');
+  var fwImg = document.getElementById('fwImg');
+  var fwTitle = document.getElementById('fwTitle');
+  var fwTag = document.getElementById('fwTag');
+  var fwList = document.getElementById('fwList');
+  var PAUSE_OPEN = 36e5;
+  function fwOpen(idx){
+    var d = fwDetails[idx]; if (!d) return;
+    fwImg.src = d.img; fwImg.alt = d.title;
+    fwTitle.textContent = d.title;
+    fwTag.textContent = d.tag;
+    fwList.innerHTML = d.pts.map(function(p){ return '<li>' + p + '</li>'; }).join('');
+    fwIdx = idx; fwSet(idx, true);
+    fwFlip.classList.add('flipped');
+    fwPaused = Date.now() + PAUSE_OPEN;
+    if (navigator.vibrate){ try{ navigator.vibrate(6); }catch(e){} }
+  }
+  function fwClose(){
+    fwFlip.classList.remove('flipped');
+    fwIdx = -1; fwSet(-1, true);
+    fwPaused = Date.now() + 6000;
+  }
   nodes.forEach(function(node){
-    node.addEventListener('click', function(){
-      var idx = +node.dataset.fw;
-      var center = document.getElementById('fwCenter');
-      center.classList.remove('pulse'); void center.offsetWidth; center.classList.add('pulse');
-      fwPaused = Date.now() + 9000;
-      if (fwIdx === idx && node.classList.contains('onn')){ fwIdx = -1; fwSet(-1); }
-      else { fwIdx = idx; fwSet(idx); }
-    });
+    node.addEventListener('click', function(){ fwOpen(+node.dataset.fw); });
   });
+  document.getElementById('fwClose').addEventListener('click', function(e){ e.stopPropagation(); fwClose(); });
   document.getElementById('fwCenter').addEventListener('click', function(){
     var c = this;
     c.classList.remove('pulse'); void c.offsetWidth; c.classList.add('pulse');
