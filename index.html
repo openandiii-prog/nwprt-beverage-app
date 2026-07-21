@@ -707,8 +707,45 @@ p.body b{ color:var(--cream); font-weight:700; }
   filter:drop-shadow(0 0 7px rgba(234,208,143,0.65)) drop-shadow(0 1px 1px rgba(5,11,20,0.8));
 }
 .tab[aria-current="page"] .tl2{ letter-spacing:0.09em; }
-.tab:active{ transform:scale(0.9); }
-.tabbar.pressing .tabglow{ transform:scale(0.94); transition:left var(--t-med) var(--e-spring), transform var(--t-fast) var(--e-out); }
+
+/* --- real push physics --- */
+.tab{ transition:color .3s, transform .1s var(--e-out); }
+.tab.is-down{ transform:translateY(1.5px) scale(0.94); }
+.tab.is-down::before{ /* socket deepens under the finger */
+  opacity:1;
+  box-shadow:
+    inset 0 3px 6px -1px rgba(5,11,20,0.95),
+    inset 0 -1px 0 rgba(251,246,236,0.03),
+    inset 0 0 0 1px rgba(5,11,20,0.55);
+}
+@keyframes tabspring{
+  0%{ transform:translateY(1.5px) scale(0.94); }
+  52%{ transform:translateY(-1.2px) scale(1.05); }
+  100%{ transform:none; }
+}
+.tab.sprung{ animation:tabspring .4s var(--e-settle); }
+/* the puck sinks flush when the active tab is pressed */
+.tabbar.pressing .tabglow{
+  transform:translateY(2px) scale(0.955);
+  transition:left var(--t-med) var(--e-spring), transform .1s var(--e-out), box-shadow .12s var(--e-out);
+  box-shadow:
+    inset 0 1px 0 rgba(251,246,236,0.14),
+    inset 0 -1px 2px -1px rgba(5,11,20,0.85),
+    inset 0 0 0 1px rgba(251,246,236,0.03),
+    0 3px 7px -4px rgba(0,0,0,0.85),
+    0 1px 3px -1px rgba(0,0,0,0.6),
+    0 0 12px -6px rgba(217,185,104,0.3);
+}
+.tabbar.pressing .tabglow::after{ opacity:.3; }
+@keyframes puckspring{
+  0%{ transform:translateY(2px) scale(0.955); }
+  52%{ transform:translateY(-1.6px) scale(1.035); }
+  100%{ transform:none; }
+}
+.tabglow.sprung{ animation:puckspring .44s var(--e-settle); }
+/* machined buttons: shadow collapses on push, like weight hitting the base */
+.btn-gold:active, .btn-gold.is-down{ box-shadow:0 5px 12px -8px rgba(217,185,104,0.5), 0 1px 4px -2px rgba(0,0,0,0.65); }
+.btn-blue:active, .btn-blue.is-down{ box-shadow:0 5px 12px -8px rgba(42,92,168,0.55), 0 1px 4px -2px rgba(0,0,0,0.65); }
 .homebar{
   position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
   width:118px; height:5px; border-radius:3px; background:rgba(242,229,200,0.32); z-index:50;
@@ -887,10 +924,6 @@ p.body b{ color:var(--cream); font-weight:700; }
   animation:slogo 1s var(--e-settle) both;
 }
 
-/* tab spring pop */
-@keyframes tabpop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.28) rotate(-4deg); } 100%{ transform:scale(1); } }
-.tab.pop svg{ animation:tabpop .45s var(--e-spring); }
-
 /* sun readout */
 .sunbit{ color:var(--gold-hi); }
 
@@ -925,6 +958,10 @@ p.body b{ color:var(--cream); font-weight:700; }
   .phone{ transform:none !important; }
   .hero img, .hero video{ transform:none !important; }
   .rv{ opacity:1; transform:none; filter:none; }
+  /* direct-touch feedback stays alive — it's response, not ambient motion */
+  .tab, .tabglow, .press, .btn{ transition-duration:.12s !important; }
+  .tab.sprung{ animation:tabspring .4s var(--e-settle) !important; animation-iteration-count:1 !important; }
+  .tabglow.sprung{ animation:puckspring .44s var(--e-settle) !important; animation-iteration-count:1 !important; }
 }
 </style>
 </head>
@@ -1657,15 +1694,38 @@ p.body b{ color:var(--cream); font-weight:700; }
   document.addEventListener('play', function(e){
     if (e.target.tagName === 'VIDEO' && !screenOf(e.target)) e.target.pause();
   }, true);
+  /* tab press = real button travel: down into the socket, spring back out */
   var tabbarEl = document.getElementById('tabbar');
+  var glowEl = document.getElementById('tabglow');
   document.querySelectorAll('.tab').forEach(function(t){
-    t.addEventListener('click', function(){
-      t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop');
-      go(t.dataset.tab);
+    t.addEventListener('click', function(){ go(t.dataset.tab); });
+    t.addEventListener('pointerdown', function(){
+      t.classList.remove('sprung');
+      t.classList.add('is-down');
+      if (t.getAttribute('aria-current') === 'page'){
+        glowEl.classList.remove('sprung');
+        tabbarEl.classList.add('pressing');
+      }
+      if (navigator.vibrate){ try{ navigator.vibrate(6); }catch(e){} }
     });
-    t.addEventListener('pointerdown', function(){ tabbarEl.classList.add('pressing'); });
-    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
-      t.addEventListener(ev, function(){ tabbarEl.classList.remove('pressing'); });
+    function release(spring){
+      if (!t.classList.contains('is-down')) return;
+      t.classList.remove('is-down');
+      if (spring){
+        void t.offsetWidth; t.classList.add('sprung');
+        setTimeout(function(){ t.classList.remove('sprung'); }, 440);
+      }
+      if (tabbarEl.classList.contains('pressing')){
+        tabbarEl.classList.remove('pressing');
+        if (spring){
+          void glowEl.offsetWidth; glowEl.classList.add('sprung');
+          setTimeout(function(){ glowEl.classList.remove('sprung'); }, 480);
+        }
+      }
+    }
+    t.addEventListener('pointerup', function(){ release(true); });
+    ['pointerleave','pointercancel'].forEach(function(ev){
+      t.addEventListener(ev, function(){ release(false); });
     });
   });
   document.querySelectorAll('[data-nav]').forEach(function(el){
