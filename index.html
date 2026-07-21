@@ -1957,6 +1957,8 @@ p.body b{ color:var(--cream); font-weight:700; }
     var sx = 0, sy = 0, mdx = 0, mdy = 0, axis = null, live = false, act = null, t0 = 0;
     stage.addEventListener('touchstart', function(e){
       if (e.touches.length !== 1){ live = false; return; }
+      /* let horizontal carousels (the drink rail, etc.) own sideways swipes — don't page-turn over them */
+      if (e.target && e.target.closest && e.target.closest('.rail, [data-hswipe]')){ live = false; return; }
       sx = e.touches[0].clientX; sy = e.touches[0].clientY;
       mdx = 0; mdy = 0; axis = null; live = true; t0 = Date.now();
       act = document.querySelector('.screen.active');
