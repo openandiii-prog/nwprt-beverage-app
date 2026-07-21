@@ -300,8 +300,18 @@ p.body b{ color:var(--cream); font-weight:700; }
   transition:transform var(--t-med) var(--e-spring), opacity var(--t-med);
 }
 .headicon .dot.read{ transform:scale(0); opacity:0; }
-.headicon svg{ transition:transform .4s var(--e-spring); }
+.headicon svg{ transition:transform .4s var(--e-spring); transform-origin:12px 4px; }
 .headicon.is-down svg{ transform:rotate(-14deg) scale(0.88); }
+/* bell rings when a drop-in banner arrives — pivots from the bell's top */
+.headicon.ring svg{ animation:bellring .78s var(--e-spring); }
+@keyframes bellring{
+  0%,100%{ transform:rotate(0); }
+  18%    { transform:rotate(-18deg); }
+  36%    { transform:rotate(14deg); }
+  54%    { transform:rotate(-9deg); }
+  72%    { transform:rotate(6deg); }
+  88%    { transform:rotate(-3deg); }
+}
 
 /* toast */
 .toast{
@@ -404,9 +414,15 @@ p.body b{ color:var(--cream); font-weight:700; }
   flex:0 0 152px; scroll-snap-align:start;
   border-radius:var(--r-md); overflow:hidden; position:relative;
   height:196px; padding:0;
+  --sc:1; --rfd:0;
+  transform:scale(var(--sc));
+  opacity:calc(1 - var(--rfd));
+  transition:transform .32s var(--e-out), opacity .32s var(--e-out), box-shadow var(--t-med) var(--e-out);
+  transform-origin:center center;
 }
 .railcard .ph{ position:absolute; inset:0; }
 .railcard .ph img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform var(--t-slow) var(--e-settle); }
+.railcard.is-down{ transform:scale(calc(var(--sc) * 0.972)) translateY(1px); filter:brightness(1.06); }
 .railcard.is-down .ph img{ transform:scale(1.07); }
 .railcard .shade{
   position:absolute; inset:0;
@@ -557,6 +573,13 @@ p.body b{ color:var(--cream); font-weight:700; }
 .tl-item.next .yr{ color:var(--tide); }
 .tl-item .tt{ font-weight:800; letter-spacing:-0.02em; color:var(--cream); font-size:14.5px; margin:4px 0 3px; }
 .tl-item .bd{ color:var(--dim); font-size:12px; line-height:1.6; font-weight:500; }
+/* nub bursts in when its item settles — transform-only so gradient/shadow stay correct on .next */
+.tl-item.rv.in .nub{ animation: nubburst .72s var(--e-spring) both; }
+@keyframes nubburst{
+  from{ transform:scale(0); }
+  55% { transform:scale(1.32); }
+  to  { transform:scale(1); }
+}
 
 /* verticals grid (the platform) */
 .vgrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 20px 0; }
@@ -1408,31 +1431,31 @@ p.body b{ color:var(--cream); font-weight:700; }
           <h2 class="h-mid">The foundation is set.</h2>
         </div>
         <div class="tl rv">
-          <div class="tl-item">
+          <div class="tl-item rv">
             <span class="nub"></span>
             <div class="yr">2019 &middot; Established</div>
             <div class="tt">Founded in Newport Beach</div>
             <div class="bd">Founded with deep roots in Newport Beach culture and community. Not a lifestyle brand &mdash; a place, framed.</div>
           </div>
-          <div class="tl-item">
+          <div class="tl-item rv">
             <span class="nub"></span>
             <div class="yr">The Platform</div>
             <div class="tt">Flagship, media, community</div>
             <div class="bd">From a physical flagship to a growing media and beverage presence &mdash; documenting a world, not inventing one.</div>
           </div>
-          <div class="tl-item">
+          <div class="tl-item rv">
             <span class="nub"></span>
             <div class="yr">2022 &middot; Beverage Arm</div>
             <div class="tt">Premium Lager + Seltzer</div>
             <div class="bd">NWPRT&reg; enters beverage. House lager and seltzer, poured to a NWPRT standard.</div>
           </div>
-          <div class="tl-item">
+          <div class="tl-item rv">
             <span class="nub"></span>
             <div class="yr">On the Coast</div>
             <div class="tt">Draft program &amp; pier pours</div>
             <div class="bd">Green handles behind Newport bars. Free beer at the pier with Charlie's Chili. The pour, where it belongs.</div>
           </div>
-          <div class="tl-item next">
+          <div class="tl-item next rv">
             <span class="nub"></span>
             <div class="yr">Next</div>
             <div class="tt">Tequila Blanco</div>
@@ -2045,13 +2068,34 @@ p.body b{ color:var(--cream); font-weight:700; }
   }
   segs.forEach(function(s){ s.addEventListener('click', function(){ selectSeg(s.dataset.panel); }); });
 
-  /* ---------- product rail dots ---------- */
+  /* ---------- product rail: dots + coverflow depth on scroll ---------- */
   var rail = document.getElementById('rail');
   var dots = document.querySelectorAll('#raildots i');
+  var railCards = rail.querySelectorAll('.railcard');
+  function railFocus(){
+    var rr = rail.getBoundingClientRect();
+    var cx = rr.left + rr.width / 2;
+    var reach = rr.width * 0.62;      /* distance at which a card is fully dimmed */
+    railCards.forEach(function(c){
+      var b = c.getBoundingClientRect();
+      var d = Math.min(1, Math.abs((b.left + b.width / 2) - cx) / reach);
+      c.style.setProperty('--sc', (1 - d * 0.07).toFixed(3));
+      c.style.setProperty('--rfd', (d * 0.42).toFixed(3));
+    });
+  }
+  var focusPending = false;
+  function scheduleRailFocus(){
+    if (focusPending) return;
+    focusPending = true;
+    requestAnimationFrame(function(){ focusPending = false; railFocus(); });
+  }
   rail.addEventListener('scroll', function(){
     var idx = Math.round(rail.scrollLeft / 164);
     dots.forEach(function(d, i){ d.classList.toggle('on', i === Math.min(idx, dots.length - 1)); });
+    scheduleRailFocus();
   }, { passive:true });
+  window.addEventListener('resize', scheduleRailFocus);
+  scheduleRailFocus();
 
   /* ---------- header ---------- */
   var toast = document.getElementById('toast'), toastT = null;
@@ -2107,6 +2151,11 @@ p.body b{ color:var(--cream); font-weight:700; }
       void note.offsetWidth;                 /* re-arm the drop transition on a repeat show */
       note.classList.add('in');
       if (navigator.vibrate){ try{ navigator.vibrate(7); }catch(e){} }
+      var bell = document.getElementById('bellBtn');
+      if (bell){
+        bell.classList.remove('ring'); void bell.offsetWidth; bell.classList.add('ring');
+        setTimeout(function(){ bell.classList.remove('ring'); }, 900);
+      }
       if (hideT) clearTimeout(hideT);
       hideT = setTimeout(hide, 5200);
     }
