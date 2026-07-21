@@ -323,7 +323,7 @@ p.body b{ color:var(--cream); font-weight:700; }
   -webkit-overflow-scrolling:touch;
 }
 .screen.active{ opacity:1; transform:none; pointer-events:auto; }
-.sec{ padding:18px 20px 0; }
+.sec{ padding:18px 20px 0; text-align:center; }
 
 /* reveal-on-enter: settle from blur */
 .rv{ opacity:0; transform:translateY(14px); filter:blur(5px); }
@@ -341,6 +341,7 @@ p.body b{ color:var(--cream); font-weight:700; }
   background:linear-gradient(0deg, rgba(5,11,20,0.92), rgba(5,11,20,0.35) 60%, transparent);
   display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
 }
+.hero .cap{ text-align:left; }
 .hero .cap .t1{ font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase; font-weight:700; color:var(--cream); }
 .hero .cap .t2{ font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600; color:var(--faint); margin-top:3px; }
 .livechip{
@@ -381,7 +382,7 @@ p.body b{ color:var(--cream); font-weight:700; }
   position:absolute; inset:0;
   background:linear-gradient(0deg, rgba(5,11,20,0.92) 0%, rgba(5,11,20,0.2) 45%, transparent 70%);
 }
-.railcard .meta{ position:absolute; left:0; right:0; bottom:0; padding:12px 13px; z-index:2; }
+.railcard .meta{ position:absolute; left:0; right:0; bottom:0; padding:12px 13px; z-index:2; text-align:center; }
 .railcard .nm{ font-weight:800; letter-spacing:-0.02em; font-size:14.5px; color:var(--cream); line-height:1.1; }
 .railcard .sb{ font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--dim); font-weight:700; margin-top:4px; }
 .railcard .tagpx{
@@ -402,7 +403,7 @@ p.body b{ color:var(--cream); font-weight:700; }
 .raildots i.on{ width:14px; border-radius:3px; background:var(--gold); opacity:1; }
 
 /* ================= CARDS / STATS / GRID ================= */
-.card{ margin:14px 20px 0; padding:16px 17px; border-radius:var(--r-md); }
+.card{ margin:14px 20px 0; padding:16px 17px; border-radius:var(--r-md); text-align:center; }
 .statrow{ display:flex; gap:10px; padding:14px 20px 0; }
 .stat{ flex:1; text-align:center; padding:14px 6px 12px; border-radius:var(--r-sm); }
 .stat .n{ font-weight:900; letter-spacing:-0.03em; color:var(--gold-hi); font-size:17px; font-variant-numeric:tabular-nums; }
@@ -481,7 +482,7 @@ p.body b{ color:var(--cream); font-weight:700; }
 @keyframes panelin{ from{ opacity:0; transform:translateY(10px); filter:blur(4px);} to{ opacity:1; transform:none; filter:blur(0);} }
 
 /* spec chip row */
-.specrow{ display:flex; flex-wrap:wrap; gap:7px; padding:12px 20px 0; }
+.specrow{ display:flex; flex-wrap:wrap; gap:7px; padding:12px 20px 0; justify-content:center; }
 .specchip{
   padding:8px 13px; border-radius:999px; font-size:9px; letter-spacing:0.14em;
   text-transform:uppercase; font-weight:800; color:var(--dim);
@@ -498,6 +499,7 @@ p.body b{ color:var(--cream); font-weight:700; }
   position:absolute; left:0; right:0; bottom:0; padding:24px 12px 11px; z-index:2;
   background:linear-gradient(0deg, rgba(5,11,20,0.94), transparent 80%);
   font-size:9px; font-weight:800; letter-spacing:0.1em; line-height:1.45; text-transform:uppercase; color:var(--cream);
+  text-align:center;
 }
 .duo .arrow{
   position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%; z-index:2;
@@ -635,8 +637,9 @@ p.body b{ color:var(--cream); font-weight:700; }
 .venue .vimg.tall video{ position:absolute; inset:0; width:100%; height:100%; }
 .venue .vimg img{ width:100%; height:100%; object-fit:cover; display:block; }
 .venue .vimg .shade{ position:absolute; inset:0; background:linear-gradient(0deg, rgba(5,11,20,0.55), transparent 60%); }
-.venue .vbody{ padding:14px 15px 15px; }
+.venue .vbody{ padding:14px 15px 15px; text-align:center; }
 .venue .vn{ font-weight:800; font-size:15px; letter-spacing:-0.02em; color:var(--cream); }
+.venue .vn[style]{ justify-content:center !important; gap:10px; }
 .venue .vs{ font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); font-weight:800; margin-top:3px; }
 .venue .vd{ font-size:12px; color:var(--dim); line-height:1.6; margin-top:8px; font-weight:500; }
 .legal{
@@ -911,7 +914,7 @@ p.body b{ color:var(--cream); font-weight:700; }
         </div>
 
         <div class="sec rv">
-          <h1 class="h-display">The house pour of the Newport lifestyle.</h1>
+          <h1 class="h-display">The house pour of the NWPRT lifestyle.</h1>
           <p class="body" style="margin:0;">Lager. Seltzer. Tequila. One brand, every occasion &mdash; brewed, poured, and lived on this coastline. <b>The pour matches the place.</b></p>
         </div>
 
@@ -1017,8 +1020,8 @@ p.body b{ color:var(--cream); font-weight:700; }
               <p class="body">Crisp and easy-drinking, brewed for every occasion on the water. The original &mdash; pouring since 2022. <b>House lager. Hospitality, refined to a NWPRT standard.</b></p>
             </div>
             <div class="duo rv">
-              <div class="half g press"><img src="real/lager-can.webp" alt="Lager can on ice"><span class="lbl">Red White &amp; Brew<br>The Label</span></div>
-              <div class="half g press"><img src="real/pier-jetty.webp" alt="The Newport coastline"><span class="lbl">Draft Program<br>On the Coast</span></div>
+              <div class="half g press"><img src="real/lager-splash.jpg" alt="NWPRT Premium Lager can bursting through golden lager and foam"><span class="lbl">Red White &amp; Brew<br>The Label</span></div>
+              <div class="half g press"><img src="real/draft-pour.jpg" alt="The green NWPRT tap handle pouring a fresh draft at the pier"><span class="lbl">Draft Program<br>On the Coast</span></div>
             </div>
             <div class="quote rv"><div class="q" style="font-size:19px;">&ldquo;The pour matches the place.&rdquo;</div></div>
           </div>
