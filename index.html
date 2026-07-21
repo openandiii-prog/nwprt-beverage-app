@@ -593,6 +593,41 @@ p.body b{ color:var(--cream); font-weight:700; }
 }
 .fwcap.fade{ opacity:0; }
 
+/* ================= FLAVOR SLIDESHOW ================= */
+.show{
+  margin:14px 20px 0; padding:0; border-radius:var(--r-md);
+  overflow:hidden; position:relative; height:350px; cursor:pointer;
+  transform:translateZ(0);
+}
+.show .sl{ position:absolute; inset:0; opacity:0; transition:opacity .85s var(--e-settle); }
+.show .sl img{ width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.02); }
+.show .sl.on{ opacity:1; }
+.show .sl.on img{ animation:kb 4.6s linear forwards; }
+@keyframes kb{ from{ transform:scale(1.02); } to{ transform:scale(1.085); } }
+.show .shade{
+  position:absolute; inset:0; z-index:2;
+  background:linear-gradient(0deg, rgba(5,11,20,0.88), rgba(5,11,20,0.18) 42%, transparent 62%);
+}
+.show .fmeta{
+  position:absolute; left:16px; right:16px; bottom:34px; z-index:3;
+  display:flex; flex-direction:column; gap:3px; pointer-events:none;
+}
+.show .fmeta b{ font-weight:900; letter-spacing:-0.02em; font-size:18px; }
+.show .fmeta i{ font-style:normal; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--dim); font-weight:700; }
+.show .fdots{
+  position:absolute; left:16px; bottom:14px; z-index:3; display:flex; gap:6px; pointer-events:none;
+}
+.show .fdots i{
+  width:5px; height:5px; border-radius:3px; background:rgba(242,229,200,0.35);
+  transition:all var(--t-med) var(--e-out);
+}
+.show .fdots i.on{ width:18px; }
+.show .ftap{
+  position:absolute; right:14px; bottom:11px; z-index:3;
+  font-size:7.5px; letter-spacing:0.2em; text-transform:uppercase; font-weight:800; color:var(--faint);
+}
+@media (prefers-reduced-motion:reduce){ .show .sl.on img{ animation:none; } }
+
 /* ================= VENUE / FIND ================= */
 .venue{ margin:14px 20px 0; border-radius:var(--r-md); overflow:hidden; padding:0; }
 .venue .vimg{ height:150px; position:relative; overflow:hidden; }
@@ -675,6 +710,113 @@ p.body b{ color:var(--cream); font-weight:700; }
   z-index:5;
 }
 
+/* ================= ALIVE LAYER — sea light + gold spray ================= */
+.sea{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.sea .swell{
+  position:absolute; left:-30%; right:-30%; height:46%;
+  background:radial-gradient(60% 100% at 50% 100%, rgba(42,92,168,0.14), transparent 70%);
+  bottom:-6%;
+  animation:swell 18s var(--e-settle) infinite alternate;
+}
+.sea .glowband{
+  position:absolute; left:-20%; right:-20%; top:-12%; height:40%;
+  background:radial-gradient(55% 90% at 50% 0%, rgba(217,185,104,0.10), transparent 70%);
+  animation:swell 26s var(--e-settle) infinite alternate-reverse;
+}
+@keyframes swell{
+  from{ transform:translateX(-4%) scaleY(1); opacity:.8; }
+  to{ transform:translateX(4%) scaleY(1.15); opacity:1; }
+}
+.sea .spark{
+  position:absolute; bottom:-2%; width:3px; height:3px; border-radius:50%;
+  background:radial-gradient(circle, rgba(234,208,143,0.9), rgba(234,208,143,0) 70%);
+  opacity:0;
+  animation:rise linear infinite;
+}
+@keyframes rise{
+  0%{ transform:translateY(0) translateX(0); opacity:0; }
+  12%{ opacity:.5; }
+  60%{ opacity:.28; }
+  100%{ transform:translateY(-88vh) translateX(14px); opacity:0; }
+}
+.sea .spark:nth-child(3){ left:12%; animation-duration:26s; animation-delay:0s; }
+.sea .spark:nth-child(4){ left:28%; animation-duration:34s; animation-delay:6s; width:2px; height:2px; }
+.sea .spark:nth-child(5){ left:47%; animation-duration:29s; animation-delay:12s; }
+.sea .spark:nth-child(6){ left:66%; animation-duration:38s; animation-delay:3s; width:2px; height:2px; }
+.sea .spark:nth-child(7){ left:81%; animation-duration:31s; animation-delay:16s; }
+.sea .spark:nth-child(8){ left:91%; animation-duration:27s; animation-delay:9s; width:2px; height:2px; }
+.screens, .appheader, .tabbar{ position:relative; z-index:10; }
+
+/* ================= BRAND TICKER ================= */
+.ticker{
+  margin:16px 0 0; padding:9px 0; overflow:hidden; position:relative;
+  border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft);
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.ticker .tk{
+  display:inline-flex; white-space:nowrap; will-change:transform;
+  animation:tk 30s linear infinite;
+}
+@keyframes tk{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+.ticker span{
+  font-size:9px; letter-spacing:0.26em; text-transform:uppercase; font-weight:800;
+  color:var(--gold); padding:0 14px; flex:0 0 auto;
+}
+.ticker span i{ font-style:normal; color:var(--faint); }
+
+/* ================= WAVE DIVIDER ================= */
+.divider.wavy{
+  height:8px; background:none; opacity:.75;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='8' viewBox='0 0 36 8'%3E%3Cpath d='M0 4 Q 4.5 0, 9 4 T 18 4 T 27 4 T 36 4' fill='none' stroke='%23D9B968' stroke-opacity='0.45' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x; background-position:center;
+}
+
+/* ================= GHOST WATERMARK ================= */
+.ghostwrap{ position:relative; overflow:hidden; }
+.ghostwrap .ghost{
+  position:absolute; left:50%; top:50%; width:150%; max-width:none;
+  transform:translate(-50%,-50%) rotate(-7deg);
+  opacity:0.05; filter:saturate(0) brightness(2.4); pointer-events:none;
+}
+.ghostwrap > *:not(.ghost){ position:relative; z-index:1; }
+
+/* ================= REAL LOGO PLATES ================= */
+.logoimg{
+  display:block; height:30px; width:auto; border-radius:5px;
+  box-shadow:0 2px 12px -3px rgba(0,0,0,0.6), 0 0 0 1px rgba(251,246,236,0.10), inset 0 1px 0 rgba(251,246,236,0.1);
+  transition:transform var(--t-med) var(--e-spring);
+}
+.brandlock.is-down .logoimg{ transform:scale(0.94); }
+.splash .slogoimg{
+  height:56px; width:auto; border-radius:8px;
+  box-shadow:0 0 60px -14px rgba(217,185,104,0.55), 0 8px 30px -10px rgba(0,0,0,0.8);
+  animation:slogo 1s var(--e-settle) both;
+}
+
+/* tab spring pop */
+@keyframes tabpop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.28) rotate(-4deg); } 100%{ transform:scale(1); } }
+.tab.pop svg{ animation:tabpop .45s var(--e-spring); }
+
+/* sun readout */
+.sunbit{ color:var(--gold-hi); }
+
+/* film play affordance */
+.playchip{
+  position:absolute; inset:0; z-index:3; display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity var(--t-med) var(--e-out); pointer-events:none;
+}
+.hero.is-paused .playchip{ opacity:1; }
+.playchip i{
+  width:60px; height:60px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(5,11,20,0.55);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  border:1px solid rgba(217,185,104,0.55);
+  box-shadow:0 12px 34px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(251,246,236,0.2);
+}
+.playchip svg{ margin-left:3px; }
+
 /* ================= RESPONSIVE + MOTION PREFS ================= */
 @media (max-width:460px){
   /* app mode: pin the shell to the visual viewport — the page itself never scrolls,
@@ -698,6 +840,12 @@ p.body b{ color:var(--cream); font-weight:700; }
 <div class="stage" id="stage">
   <div class="phone" id="phone">
     <div class="island" aria-hidden="true"></div>
+    <div class="sea" aria-hidden="true">
+      <span class="swell"></span>
+      <span class="glowband"></span>
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+    </div>
 
     <div class="statusbar" aria-hidden="true">
       <span id="clock">9:41</span>
@@ -710,7 +858,7 @@ p.body b{ color:var(--cream); font-weight:700; }
 
     <header class="appheader">
       <button class="brandlock press" id="brandBtn" aria-label="NWPRT Beverage — back to top">
-        <span class="logobox"><span class="word">NWPRT<span class="reg">&reg;</span></span></span>
+        <img class="logoimg" src="real/nwprt-logo.webp" alt="NWPRT&reg;">
         <span class="arm">
           <span class="a1">Beverage</span>
           <span class="a2">Newport Beach, CA</span>
@@ -728,9 +876,9 @@ p.body b{ color:var(--cream); font-weight:700; }
 
       <!-- ============ HOME ============ -->
       <section class="screen active" data-screen="home" aria-label="Home">
-        <div class="sec rv" style="padding-top:14px; display:flex; align-items:baseline; justify-content:space-between;">
-          <p class="eyebrow" style="margin:0;" id="greeting">Good evening, Newport</p>
-          <span class="spec" id="dateline"></span>
+        <div class="sec rv" style="padding-top:14px; display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+          <p class="eyebrow" style="margin:0; white-space:nowrap;" id="greeting">Good evening, Newport</p>
+          <span class="spec" id="dateline" style="font-size:8px; letter-spacing:0.12em; text-align:right; white-space:nowrap;"></span>
         </div>
 
         <div class="hero g g-hi press shine rv" data-nav="lineup" role="button" tabindex="0" aria-label="The Original — Premium Lager">
@@ -751,6 +899,13 @@ p.body b{ color:var(--cream); font-weight:700; }
           <span>EST. <b>2019</b></span><span class="sep"></span>
           <span>BEVERAGE SINCE <b>2022</b></span><span class="sep"></span>
           <span>NEWPORT BEACH</span>
+        </div>
+
+        <div class="ticker rv" aria-hidden="true">
+          <div class="tk">
+            <span>The Pour Matches The Place <i>&middot;</i></span><span>Est. 2019 <i>&middot;</i></span><span>House Lager <i>&middot;</i></span><span>Premium Seltzer <i>&middot;</i></span><span>Tequila Blanco <i>&middot;</i></span><span>Relax. You've Made It <i>&middot;</i></span><span>Newport Beach, CA <i>&middot;</i></span>
+            <span>The Pour Matches The Place <i>&middot;</i></span><span>Est. 2019 <i>&middot;</i></span><span>House Lager <i>&middot;</i></span><span>Premium Seltzer <i>&middot;</i></span><span>Tequila Blanco <i>&middot;</i></span><span>Relax. You've Made It <i>&middot;</i></span><span>Newport Beach, CA <i>&middot;</i></span>
+          </div>
         </div>
 
         <div class="sec rv">
@@ -890,9 +1045,26 @@ p.body b{ color:var(--cream); font-weight:700; }
             <div class="sec rv">
               <p class="body">Light and refreshing, made for long days on the water. Part of the lineup since day one, alongside the Lager &mdash; now poured four ways. <b>Every flavor belongs to this coastline.</b></p>
             </div>
-            <div class="duo rv">
-              <div class="half g press"><img src="real/seltzer-lime.jpg" alt="Sea Salt Lime can in ice"><span class="lbl">Sea Salt Lime<br>The Signature</span></div>
-              <div class="half g press"><img src="real/pier-jetty.webp" alt="The Newport jetty"><span class="lbl">Made For<br>The Water</span></div>
+            <div class="show g rv" id="flavorShow" role="button" tabindex="0" aria-label="Flavor showcase — tap for the next flavor">
+              <div class="sl on" data-c="#8FD4B8">
+                <img src="real/seltzer-lime.jpg" alt="Sea Salt Lime — can in crushed ice">
+                <span class="fmeta"><b style="color:#8FD4B8;">Sea Salt Lime</b><i>The Signature &middot; Salt air in a can</i></span>
+              </div>
+              <div class="sl" data-c="#F0917E">
+                <img src="real/seltzer-grapefruit.jpg" alt="Sunset Grapefruit — can at golden hour">
+                <span class="fmeta"><b style="color:#F0917E;">Sunset Grapefruit</b><i>Golden Hour &middot; Pier Side</i></span>
+              </div>
+              <div class="sl" data-c="#EAB94F">
+                <img src="real/seltzer-mango.jpg" alt="Mango Swell — can on bright sand">
+                <span class="fmeta"><b style="color:#EAB94F;">Mango Swell</b><i>Bright &middot; Built for the swell</i></span>
+              </div>
+              <div class="sl" data-c="#9AD3E8">
+                <img src="real/seltzer-punch.jpg" alt="Pacific Punch — can on the boardwalk">
+                <span class="fmeta"><b style="color:#9AD3E8;">Pacific Punch</b><i>Red White &amp; Brew &middot; Boardwalk</i></span>
+              </div>
+              <span class="shade"></span>
+              <span class="fdots"><i class="on"></i><i></i><i></i><i></i></span>
+              <span class="ftap">Tap</span>
             </div>
             <div class="quote rv"><div class="q" style="font-size:19px;">&ldquo;Born from the sun, nurtured by the water.&rdquo;</div></div>
           </div>
@@ -945,16 +1117,17 @@ p.body b{ color:var(--cream); font-weight:700; }
 
       <!-- ============ STORY ============ -->
       <section class="screen" data-screen="story" aria-label="The Story">
-        <div class="hero g g-hi press shine rv" style="margin-top:16px;">
+        <div class="hero g g-hi press shine rv" id="filmCard" style="margin-top:16px;" role="button" tabindex="0" aria-label="The Platform film — tap to play or pause">
           <i class="sweep"></i>
           <div class="frame">
-            <video autoplay muted loop playsinline poster="real/pier-jetty.webp" src="real/the-platform-overlay.mp4" aria-label="NWPRT — The Platform brand film"></video>
+            <video autoplay muted loop playsinline preload="auto" poster="real/pier-jetty.webp" src="real/the-platform-overlay.mp4" id="filmVid" aria-label="NWPRT — The Platform brand film"></video>
+            <span class="playchip"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FBF6EC"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></i></span>
             <div class="cap">
               <div>
                 <div class="t1">The Platform</div>
                 <div class="t2">A NWPRT&reg; Film &middot; 2:25</div>
               </div>
-              <span class="livechip g g-lo"><span class="pip"></span>Now Playing</span>
+              <span class="livechip g g-lo"><span class="pip"></span><span id="filmChip">Now Playing</span></span>
             </div>
           </div>
         </div>
@@ -965,7 +1138,7 @@ p.body b{ color:var(--cream); font-weight:700; }
           <p class="body">From the ordinary days, to the unexpected afternoons. The planned celebrations, the unforgettable nights, and all the memories in between. What we drink is part of how we live, where we gather, and what we remember.</p>
         </div>
 
-        <div class="divider rv"></div>
+        <div class="divider wavy rv"></div>
 
         <div class="sec rv" style="padding-top:14px;">
           <p class="eyebrow">Since 2019</p>
@@ -1004,7 +1177,7 @@ p.body b{ color:var(--cream); font-weight:700; }
           </div>
         </div>
 
-        <div class="divider rv"></div>
+        <div class="divider wavy rv"></div>
 
         <div class="sec rv" style="padding-top:14px;">
           <p class="eyebrow">The NWPRT&reg; Experience</p>
@@ -1017,7 +1190,8 @@ p.body b{ color:var(--cream); font-weight:700; }
           <div class="vcell g g-lo press"><div class="vn">Culture</div><div class="vt">Lived in, not performed for.</div></div>
         </div>
 
-        <div class="quote rv">
+        <div class="quote ghostwrap rv">
+          <img class="ghost" src="real/nwprt-logo.webp" alt="" aria-hidden="true">
           <div class="q">&ldquo;Relax. You've made it.&rdquo;</div>
           <p class="body sub">You love Newport. So why raise a glass to someone else's story? NWPRT began with community &mdash; and is creating a collection of beverages that belong to the Newport lifestyle.</p>
           <div class="taglist"><span><b>Authentic</b></span><span><b>Local</b></span><span><b>Enduring</b></span></div>
@@ -1048,6 +1222,19 @@ p.body b{ color:var(--cream); font-weight:700; }
           <div class="iconcell g g-lo press">
             <div class="ic g g-lo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EAD08F" stroke-width="1.6" stroke-linecap="round"><path d="M2 18c1.5 1.2 3 1.8 5 1.8s3.5-.9 5-1.8 3-1.8 5-1.8 3.5.6 5 1.8M2 13c1.5 1.2 3 1.8 5 1.8s3.5-.9 5-1.8 3-1.8 5-1.8 3.5.6 5 1.8M6 9l6-6 6 6M12 3v8"/></svg></div>
             <div class="lbl">On the Water</div>
+          </div>
+        </div>
+
+        <div class="venue g press shine rv" data-nav="lineup" data-seg="seltzer" role="button" tabindex="0" aria-label="Made for the moment — see the Seltzer lineup">
+          <i class="sweep"></i>
+          <div class="vimg" style="height:172px;">
+            <img src="real/seltzer-lifestyle.jpg" alt="Sea Salt Lime raised against the pier at golden hour">
+            <span class="shade"></span>
+          </div>
+          <div class="vbody">
+            <div class="vn">Made for the moment</div>
+            <div class="vs">Golden Hour &middot; Pier Side</div>
+            <div class="vd">Cheers with the coastline. Every can belongs in hand, right here.</div>
           </div>
         </div>
 
@@ -1164,7 +1351,7 @@ p.body b{ color:var(--cream); font-weight:700; }
     <div class="homebar" aria-hidden="true"></div>
 
     <div class="splash" id="splash" aria-hidden="true">
-      <div class="slogo">NWPRT<span class="reg">&reg;</span></div>
+      <img class="slogoimg" src="real/nwprt-logo.webp" alt="NWPRT&reg;">
       <div class="shair"></div>
       <div class="sline">Beverage &middot; Newport Beach</div>
     </div>
@@ -1191,8 +1378,54 @@ p.body b{ color:var(--cream); font-weight:700; }
   tick(); setInterval(tick, 30000);
   var now = new Date();
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('dateline').textContent = months[now.getMonth()] + ' ' + now.getDate();
   document.getElementById('copyline').innerHTML = '&copy; ' + now.getFullYear() + ' NWPRT &middot; Newport Beach, CA';
+
+  /* real Newport sun engine — NOAA approximation, no API */
+  function sunTimes(d, lat, lng){
+    var rad = Math.PI / 180;
+    var day = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+    var lngHour = lng / 15;
+    function calc(rising){
+      var t = day + ((rising ? 6 : 18) - lngHour) / 24;
+      var M = (0.9856 * t) - 3.289;
+      var L = M + (1.916 * Math.sin(M * rad)) + (0.020 * Math.sin(2 * M * rad)) + 282.634;
+      L = (L + 360) % 360;
+      var RA = Math.atan(0.91764 * Math.tan(L * rad)) / rad;
+      RA = (RA + 360) % 360;
+      RA += (Math.floor(L / 90) * 90 - Math.floor(RA / 90) * 90);
+      RA /= 15;
+      var sinDec = 0.39782 * Math.sin(L * rad);
+      var cosDec = Math.cos(Math.asin(sinDec));
+      var cosH = (Math.cos(90.833 * rad) - (sinDec * Math.sin(lat * rad))) / (cosDec * Math.cos(lat * rad));
+      if (cosH > 1 || cosH < -1) return null;
+      var H = (rising ? 360 - Math.acos(cosH) / rad : Math.acos(cosH) / rad) / 15;
+      var T = H + RA - (0.06571 * t) - 6.622;
+      var UT = ((T - lngHour) % 24 + 24) % 24;
+      var res = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      res.setUTCSeconds(Math.round(UT * 3600));
+      return res;
+    }
+    return { rise: calc(true), set: calc(false) };
+  }
+  function fmtClock(d){
+    var h = d.getHours(), m = d.getMinutes();
+    return (((h + 11) % 12) + 1) + ':' + (m < 10 ? '0' : '') + m + ' ' + (h < 12 ? 'AM' : 'PM');
+  }
+  function sunLine(){
+    var d = new Date();
+    var st = sunTimes(d, 33.6189, -117.9298);
+    var base = months[d.getMonth()] + ' ' + d.getDate();
+    if (!st || !st.set) return base;
+    var ms = st.set - d;
+    var tag;
+    if (ms > 0 && ms < 65 * 60000) tag = 'Golden Hour Now';
+    else if (ms >= 65 * 60000) tag = 'Sunset ' + fmtClock(st.set);
+    else if (st.rise && d < st.rise) tag = 'Sunrise ' + fmtClock(st.rise);
+    else tag = 'Sunset ' + fmtClock(st.set);
+    return base + ' &middot; <span class="sunbit">' + tag + '</span>';
+  }
+  document.getElementById('dateline').innerHTML = sunLine();
+  setInterval(function(){ document.getElementById('dateline').innerHTML = sunLine(); }, 60000);
 
   /* ---------- environment light: pointer + device tilt ---------- */
   var lx = 38, ly = 22, tx = 0, ty = 0, raf = null;
@@ -1286,16 +1519,21 @@ p.body b{ color:var(--cream); font-weight:700; }
   function screenOf(v){ var s = v.closest('.screen'); return s ? s.classList.contains('active') : true; }
   function syncVideos(){
     document.querySelectorAll('.screen video').forEach(function(v){
-      if (screenOf(v)){ if (v.paused) v.play().catch(function(){}); }
+      if (screenOf(v)){ if (v.paused && !v.dataset.userPaused){ v.muted = true; v.play().catch(function(){}); } }
       else if (!v.paused) v.pause();
     });
   }
+  /* gesture rescue: any touch retries playback on the active screen (iOS low-power) */
+  document.addEventListener('touchend', function(){ syncVideos(); }, { passive:true });
   /* late-autoplay guard: hidden videos that start on their own get paused */
   document.addEventListener('play', function(e){
     if (e.target.tagName === 'VIDEO' && !screenOf(e.target)) e.target.pause();
   }, true);
   document.querySelectorAll('.tab').forEach(function(t){
-    t.addEventListener('click', function(){ go(t.dataset.tab); });
+    t.addEventListener('click', function(){
+      t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop');
+      go(t.dataset.tab);
+    });
   });
   document.querySelectorAll('[data-nav]').forEach(function(el){
     el.addEventListener('click', function(){ go(el.dataset.nav, el.dataset.seg || null); });
@@ -1410,6 +1648,58 @@ p.body b{ color:var(--cream); font-weight:700; }
     fwPaused = Date.now() + 9000;
     fwIdx = -1; fwSet(-1);
   });
+
+  /* ---------- the platform film: tap to play / pause ---------- */
+  var filmCard = document.getElementById('filmCard');
+  var filmVid = document.getElementById('filmVid');
+  if (filmCard && filmVid){
+    var filmChip = document.getElementById('filmChip');
+    function filmUI(){
+      filmCard.classList.toggle('is-paused', filmVid.paused);
+      if (filmChip) filmChip.textContent = filmVid.paused ? 'Tap to Play' : 'Now Playing';
+    }
+    filmVid.addEventListener('play', function(){ delete filmVid.dataset.userPaused; filmUI(); });
+    filmVid.addEventListener('pause', filmUI);
+    filmCard.addEventListener('click', function(){
+      if (filmVid.paused){
+        delete filmVid.dataset.userPaused;
+        filmVid.muted = true;
+        filmVid.play().catch(function(){});
+      } else {
+        filmVid.dataset.userPaused = '1';
+        filmVid.pause();
+      }
+    });
+    filmCard.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); filmCard.click(); }
+    });
+    filmUI();
+  }
+
+  /* ---------- flavor slideshow ---------- */
+  var show = document.getElementById('flavorShow');
+  if (show){
+    var sls = show.querySelectorAll('.sl');
+    var fds = show.querySelectorAll('.fdots i');
+    var fi = 0, fpause = 0;
+    function fset(n){
+      fi = (n + sls.length) % sls.length;
+      sls.forEach(function(s, k){ s.classList.toggle('on', k === fi); });
+      fds.forEach(function(d, k){
+        d.classList.toggle('on', k === fi);
+        d.style.background = k === fi ? sls[fi].dataset.c : '';
+      });
+    }
+    show.addEventListener('click', function(){ fpause = Date.now() + 9000; fset(fi + 1); });
+    show.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fpause = Date.now() + 9000; fset(fi + 1); }
+    });
+    if (!reduced) setInterval(function(){
+      var p = show.closest('.panel'), sc = show.closest('.screen');
+      if (Date.now() > fpause && p && p.classList.contains('on') && sc && sc.classList.contains('active')) fset(fi + 1);
+    }, 3600);
+    fset(0);
+  }
 
   /* ---------- splash ---------- */
   var splash = document.getElementById('splash');
