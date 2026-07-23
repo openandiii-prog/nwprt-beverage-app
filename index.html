@@ -2580,7 +2580,7 @@ p.body b{ color:var(--cream); font-weight:800; }
   (function(){
     var stage = document.getElementById('screens');
     if (!stage) return;
-    var sx = 0, sy = 0, mdx = 0, mdy = 0, axis = null, live = false, act = null, t0 = 0;
+    var sx = 0, sy = 0, mdx = 0, mdy = 0, axis = null, live = false, act = null, t0 = 0, st0 = 0;
     stage.addEventListener('touchstart', function(e){
       if (e.touches.length !== 1){ live = false; return; }
       /* let horizontal carousels (the drink rail, etc.) own sideways swipes — don't page-turn over them */
@@ -2588,16 +2588,32 @@ p.body b{ color:var(--cream); font-weight:800; }
       sx = e.touches[0].clientX; sy = e.touches[0].clientY;
       mdx = 0; mdy = 0; axis = null; live = true; t0 = Date.now();
       act = document.querySelector('.screen.active');
+      st0 = act ? act.scrollTop : 0;            /* baseline, so we can tell if it really scrolled */
     }, { passive:true });
     stage.addEventListener('touchmove', function(e){
       if (!live || !act) return;
       mdx = e.touches[0].clientX - sx;
       mdy = e.touches[0].clientY - sy;
+      var ax = Math.abs(mdx), ay = Math.abs(mdy);
       if (!axis){
-        if (Math.abs(mdx) > 10 || Math.abs(mdy) > 10){
-          axis = (Math.abs(mdx) > Math.abs(mdy) * 1.2) ? 'x' : 'y';
+        /* already scrolling natively: this is a scroll, hands off. preventDefault
+           would be ignored at this point anyway, and the drag-peek would smear the
+           page sideways mid-scroll. */
+        if (act.scrollTop !== st0){ axis = 'y'; }
+        /* otherwise wait for real signal. locking on whichever axis crossed 10px
+           FIRST made an ordinary thumb-arc scroll lock horizontal and kill the
+           scroll for the whole gesture. scrolling is the dominant gesture here, so
+           it wins every tie: a page-turn has to clear real distance AND dominate. */
+        else if (ax < 12 && ay < 8) return;
+        else {
+          axis = (ax > 12 && ax > ay * 1.6) ? 'x' : 'y';
           if (axis === 'x') act.style.transition = 'none';
-        } else return;
+        }
+      }
+      /* a swipe that started drifty can still be reclaimed for paging, but only
+         while the page has not scrolled a single pixel */
+      if (axis === 'y' && act.scrollTop === st0 && ax > 24 && ax > ay * 2){
+        axis = 'x'; act.style.transition = 'none';
       }
       if (axis === 'x'){
         e.preventDefault();                       /* hold the vertical scroll while paging */
